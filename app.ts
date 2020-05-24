@@ -14,6 +14,7 @@ const program = new Denomander(
 
 program
   .command("initiate", "Initial Config")
+  .command("generate", "create migration file")
   .parse(Deno.args);
 
 if (program.initiate) {
@@ -24,4 +25,8 @@ if (program.initiate) {
     await config.create();
     console.log("configuration created");
   }
+}
+
+if (program.generate) {
+  //Adding file
 }

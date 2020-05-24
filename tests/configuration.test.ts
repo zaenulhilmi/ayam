@@ -31,12 +31,13 @@ Deno.test("testing create a config file if its not exist", async () => {
 
 Deno.test("testing adding configuration to created file", async () => {
   let tup = new Configuration();
-  tup.saveFile();
-  tup.addConfig();
+  await tup.saveFile();
+  await tup.addConfig();
   let textResult = await Deno.readTextFile("./migration.config.ts");
 
   let expectResult = `let MySQL = {
-  db_type: 'mysql',
+  dialect: 'mysql',
+  migrationDirectory: './migrations',
   hostname: '127.0.0.1',
   username: 'root',
   db: 'dbname',

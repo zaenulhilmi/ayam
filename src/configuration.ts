@@ -7,7 +7,8 @@ class Configuration extends ConfigurationAbstract {
 
   async addConfig(): Promise<void> {
     let config = `let MySQL = {
-  db_type: 'mysql',
+  dialect: 'mysql',
+  migrationDirectory: './migrations',
   hostname: '127.0.0.1',
   username: 'root',
   db: 'dbname',
