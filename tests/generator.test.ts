@@ -46,6 +46,27 @@ export default CLASS_NAME;
   assertEquals(templateText, text);
 });
 
+Deno.test("read template and chage class name", async () => {
+  let command: string = "createUsersTable";
+  let generator = new Generator(command);
+  let templateText = await generator.migrationText();
+  let text = `class Migration {}
+class CreateUsersTable extends Migration {
+  constructor() {
+    super();
+  }
+
+  async up(): Promise<void> {
+  }
+
+  async down(): Promise<void> {
+  }
+}
+
+export default CreateUsersTable;
+`;
+  assertEquals(templateText, text);
+});
 Deno.test("add file to migration directory", async () => {
   let config = await Configuration.newInstance()
   await config.create()

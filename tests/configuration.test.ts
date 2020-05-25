@@ -6,6 +6,15 @@ let fileLocation = `${realPath}/migration.config.ts`;
 
 Deno.test("configuration doesn't exist", async () => {
   let tup = await Configuration.newInstance();
+  let shouldRemove = true;
+  try {
+    await Deno.stat(tup.fileLocation)
+  } catch(e){
+    shouldRemove = false
+  }
+  if(shouldRemove){
+    await tup.remove()
+  }
   let result = await tup.exist();
   assertEquals(result, false);
 });

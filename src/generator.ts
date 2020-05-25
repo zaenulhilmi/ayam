@@ -29,14 +29,20 @@ class Generator {
     return text;
   }
 
+  async migrationText(): Promise<string> {
+    let text = await this.getTemplate()
+    text = text.replace("CLASS_NAME", Case.pascalCase(this.command))
+    text = text.replace("CLASS_NAME", Case.pascalCase(this.command))
+    return text
+  }
+
   async execute(): Promise<void> {
     let fileName = await this.getFileName()
     let config = await Configuration.newInstance()
     let dir = await config.get('migrationDirectory')
-    let text = await this.getTemplate()
+    let text = await this.migrationText()
     let fullPath = `${dir}/${fileName}`
-    console.log('this is full path', fullPath)
-    Deno.writeTextFile(fullPath, text)
+    await Deno.writeTextFile(fullPath, text)
 
   }
 
