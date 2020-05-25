@@ -2,6 +2,7 @@
 
 import { Denomander } from "./deps.ts";
 import Configuration from "./src/configuration.ts";
+import Generator from "./src/generator.ts"
 
 const program = new Denomander(
   {
@@ -14,11 +15,11 @@ const program = new Denomander(
 
 program
   .command("initiate", "Initial Config")
-  .command("generate", "create migration file")
+  .command("generate [commandName]", "create migration file")
   .parse(Deno.args);
 
 if (program.initiate) {
-  let config = new Configuration();
+  let config = await Configuration.newInstance();
   if (await config.exist()) {
     console.log("configuration is already exist");
   } else {
@@ -28,5 +29,6 @@ if (program.initiate) {
 }
 
 if (program.generate) {
-  //Adding file
+  let generator = new Generator(program.commandName)
+  await generator.execute()
 }
