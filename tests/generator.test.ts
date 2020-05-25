@@ -5,6 +5,26 @@ Deno.test("testing generate a name for migration", async () => {
   let command: string = "create_users_table";
   let generator = new Generator(command);
   let fileName = await generator.getFileName();
+  let prefix = generatePrefix()
+  assertEquals(
+    fileName,
+    `${prefix}_create_users_table_migration.ts`,
+  );
+});
+
+Deno.test("testing generate a name for migration using snakeCase", async() => {
+  let command: string = "createUsersTable";
+  let generator = new Generator(command);
+  let fileName = await generator.getFileName();
+  console.log(fileName)
+  let prefix = generatePrefix()
+  assertEquals(
+    fileName,
+    `${prefix}_create_users_table_migration.ts`,
+  );
+})
+
+function generatePrefix() {
   let now = new Date();
   let year = now.getFullYear();
   let month = now.getMonth();
@@ -28,8 +48,5 @@ Deno.test("testing generate a name for migration", async () => {
   }
   let prefix = formattedTimestamps.slice(0, 3).join("_") + "_" +
     formattedTimestamps.slice(3).join("");
-  assertEquals(
-    fileName,
-    `${prefix}_create_users_table_migration.ts`,
-  );
-});
+    return prefix
+}

@@ -1,7 +1,15 @@
 import ConfigurationAbstract from "./configuration_abstract.ts";
 class Configuration extends ConfigurationAbstract {
+
+  fileLocation: string 
+
+  constructor() {
+    super()
+    this.fileLocation = './migration.config.ts'
+  }
+
   async saveFile(): Promise<void> {
-    let configFile = await Deno.create("./migration.config.ts");
+    let configFile = await Deno.create(this.fileLocation);
     configFile.close();
   }
 
@@ -16,16 +24,20 @@ class Configuration extends ConfigurationAbstract {
 };
 
 export default MySQL`;
-    await Deno.writeTextFile("./migration.config.ts", config);
+    await Deno.writeTextFile(this.fileLocation, config);
   }
 
   async exist(): Promise<boolean> {
     try {
-      let res = await Deno.stat("./migration.config.ts");
+      let res = await Deno.stat(this.fileLocation);
       return true;
     } catch (e) {
       return false;
     }
+  }
+
+  async remove(): Promise<void> {
+    await Deno.remove(this.fileLocation)  
   }
 }
 export default Configuration;

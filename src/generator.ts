@@ -1,8 +1,12 @@
+import { Case } from "../deps.ts";
+
 class Generator {
   command: string;
+
   constructor(command: string) {
     this.command = command;
   }
+
   async getFileName(): Promise<string> {
     let now = new Date();
     let year = now.getFullYear();
@@ -15,7 +19,8 @@ class Generator {
     let timestamps: Array<Number> = [];
     timestamps.push(year, month, date, hours, minutes, seconds);
     let prefix = this._getPrefix(timestamps);
-    return `${prefix}_${this.command}_migration.ts`;
+    let command = Case.snakeCase(this.command)
+    return `${prefix}_${command}_migration.ts`;
   }
 
   _getPrefix(timestamps: Array<Number>): string {

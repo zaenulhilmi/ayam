@@ -1,8 +1,8 @@
 import { assertEquals } from "https://deno.land/std/testing/asserts.ts";
 import Configuration from "../src/configuration.ts";
+import Generator from "../src/generator.ts";
 
 Deno.test("testing configuration doesn't exist", async () => {
-  await Deno.remove("./migration.config.ts");
   let tup = new Configuration();
   let result = await tup.exist();
   assertEquals(result, false);
@@ -47,3 +47,10 @@ Deno.test("testing adding configuration to created file", async () => {
 export default MySQL`;
   assertEquals(textResult, expectResult);
 });
+
+Deno.test("testing remove configuration file", async () => {
+  let config = new Configuration();
+  await config.create()
+  await config.remove()
+  assertEquals(await config.exist(), false)
+})
