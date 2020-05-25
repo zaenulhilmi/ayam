@@ -12,9 +12,9 @@ abstract class ConfigurationAbstract {
     return true;
   }
 
-  create(): void {
-    this.saveFile();
-    this.addConfig();
+  async create(): Promise<void> {
+    await this.saveFile();
+    await this.addConfig();
   }
 }
 

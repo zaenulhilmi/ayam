@@ -1,20 +1,19 @@
 import ConfigurationAbstract from "./configuration_abstract.ts";
 class Configuration extends ConfigurationAbstract {
-
-  fileLocation: string = ''
+  fileLocation: string = "";
 
   constructor() {
-   super()
+    super();
   }
 
   async initiate(): Promise<void> {
-      let realPath = await Deno.realPath('.')
-      this.fileLocation = `${realPath}/migration.config.ts`
+    let realPath = await Deno.realPath(".");
+    this.fileLocation = `${realPath}/migration.config.ts`;
   }
 
-  static async  instance(): Promise<Configuration> {
-    let config = new Configuration()
-    await config.initiate()
+  static async newInstance(): Promise<Configuration> {
+    let config = new Configuration();
+    await config.initiate();
     return config;
   }
 
@@ -40,8 +39,8 @@ export default MySQL`;
   async exist(): Promise<boolean> {
     try {
       let res = await Deno.stat(this.fileLocation);
-      if(!res.isFile){
-        return false
+      if (!res.isFile) {
+        return false;
       }
       return true;
     } catch (e) {
@@ -49,8 +48,17 @@ export default MySQL`;
     }
   }
 
+  async get(key: string): Promise<string> {
+    let config = await Configuration.newInstance()
+    let realPath = await Deno.realPath(".");
+    let start = config.fileLocation.indexOf(realPath);
+    let location = config.fileLocation.slice(start + realPath.length);
+    let conf = (await import(`..${location}`)).default;
+    return conf[key]
+  }
+
   async remove(): Promise<void> {
-    await Deno.remove(this.fileLocation)  
+    await Deno.remove(this.fileLocation);
   }
 }
 export default Configuration;
