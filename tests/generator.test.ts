@@ -16,7 +16,6 @@ Deno.test("testing generate a name for migration using snakeCase", async() => {
   let command: string = "createUsersTable";
   let generator = new Generator(command);
   let fileName = await generator.getFileName();
-  console.log(fileName)
   let prefix = generatePrefix()
   assertEquals(
     fileName,

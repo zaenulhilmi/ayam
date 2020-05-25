@@ -1,11 +1,21 @@
 import ConfigurationAbstract from "./configuration_abstract.ts";
 class Configuration extends ConfigurationAbstract {
 
-  fileLocation: string 
+  fileLocation: string = ''
 
   constructor() {
-    super()
-    this.fileLocation = './migration.config.ts'
+   super()
+  }
+
+  async initiate(): Promise<void> {
+      let realPath = await Deno.realPath('.')
+      this.fileLocation = `${realPath}/migration.config.ts`
+  }
+
+  static async  instance(): Promise<Configuration> {
+    let config = new Configuration()
+    await config.initiate()
+    return config;
   }
 
   async saveFile(): Promise<void> {
@@ -30,6 +40,9 @@ export default MySQL`;
   async exist(): Promise<boolean> {
     try {
       let res = await Deno.stat(this.fileLocation);
+      if(!res.isFile){
+        return false
+      }
       return true;
     } catch (e) {
       return false;
