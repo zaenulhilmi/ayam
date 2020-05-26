@@ -71,11 +71,16 @@ Deno.test("add file to migration directory", async () => {
   let config = await Configuration.newInstance()
   await config.create()
   let directory = await config.get('migrationDirectory')
- let files = await Deno.readDir(directory) 
+
  let currentFileTotal = 0;
+  try {
+ let files = await Deno.readDir(directory) 
  for await (let file of files){
     currentFileTotal += 1
  }
+  } catch (e){
+    
+  }
 
   let command: string = "createUsersTable";
   let generator = new Generator(command);
@@ -88,6 +93,9 @@ Deno.test("add file to migration directory", async () => {
  }
 
   assertEquals(afterTotal, currentFileTotal+1)
+
+  await Deno.remove(directory, {recursive: true});
+
 })
 
 

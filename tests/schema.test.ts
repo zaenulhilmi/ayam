@@ -18,4 +18,3 @@ import { assertEquals, assert } from "https://deno.land/std/testing/asserts.ts";
 //     assertEquals(true, true)
 //     }, sanitizeResources: false, sanitizeOps: false
 //  })
-console.log('this is env', Deno.env.get("HELLO"))

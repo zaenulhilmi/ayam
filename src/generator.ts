@@ -41,6 +41,18 @@ class Generator {
     let config = await Configuration.newInstance()
     let dir = await config.get('migrationDirectory')
     let text = await this.migrationText()
+    
+    let isDirExist: boolean = true;
+    try{
+      let res = await Deno.stat(dir)
+      console.log(res)
+    } catch(e){
+      isDirExist = false
+    }
+    if(!isDirExist){
+      await Deno.mkdir(dir, {recursive: true})
+    }
+
     let fullPath = `${dir}/${fileName}`
     await Deno.writeTextFile(fullPath, text)
 
