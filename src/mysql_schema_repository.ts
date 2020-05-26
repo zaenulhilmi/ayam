@@ -62,6 +62,14 @@ class MySqlSchemaRepository implements SchemaInterface {
             console.error(e)
         }
     }
+
+    async rename(oldTableName: string, newTableName: string): Promise<void> {
+        try{
+            await mysql.execute(`RENAME TABLE ${oldTableName} TO ${newTableName}`)
+        }catch(e){
+            console.error(e)
+        }
+    }
 }
 
 export default MySqlSchemaRepository
