@@ -5,7 +5,7 @@ interface SchemaInterface {
     // hasColumns(tableName: string, columnName: Array<string>): Promise<boolean>
     getColumnType(tableName: string, columnName: string): Promise<string>
     create(tableName: string, callback: (builder: BuilderInterface) => void): Promise<void>
-    // drop(tableName: string): Promise<boolean>
+    drop(tableName: string): Promise<void>
 }
 
 export default SchemaInterface

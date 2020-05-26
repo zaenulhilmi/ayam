@@ -48,12 +48,19 @@ class MySqlSchemaRepository implements SchemaInterface {
         }
     }
 
-    // create(tableName: string, callback: (builder: BuilderInterface) => void): Promise<boolean>
     async create(tableName: string, callback: (builder: BuilderInterface) => void): Promise<void>{
 
         let mysqlBuilder: BuilderInterface = new MySqlBuilder(tableName)
         callback(mysqlBuilder);
         mysqlBuilder.build()
+    }
+
+    async drop(tableName: string): Promise<void> {
+        try{
+            await mysql.execute(`DROP TABLE ${tableName}`)
+        } catch(e){
+            console.error(e)
+        }
     }
 }
 
