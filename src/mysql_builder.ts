@@ -1,5 +1,7 @@
 import BuilderInterface from "./builder_interface.ts";
 import mysql from "./driver/mysql.ts"
+import BuilderOptionInterface from "./builder_option_interface.ts"
+
 class MySqlBuilder implements BuilderInterface{
 
     tableName: string
@@ -11,22 +13,66 @@ class MySqlBuilder implements BuilderInterface{
         this.query = `CREATE TABLE ${this.tableName} ( COLUMNS_PLACEHOLDER );`
     }
 
-    async string(columnName: string, length?: number): Promise<void> {
-        if(!length) length = 100
-        this.columns.push(`${columnName} VARCHAR(${length})`)
+    async string(columnName: string, option?: BuilderOptionInterface): Promise<void> {
+        let length = 100
+        if(!option){
+            this.columns.push(`${columnName} VARCHAR(${length}) NOT NULL`)
+            return
+        }
+
+        if(option.length){
+            length = option.length
+        }
+
+        if(option.nullable){
+            this.columns.push(`${columnName} VARCHAR(${length}) DEFAULT NULL`)
+        } else {
+            this.columns.push(`${columnName} VARCHAR(${length}) NOT NULL`)
+        }
     }
 
-    async integer(columnName: string, length?: number): Promise<void> {
-        if(!length) length = 11
-        this.columns.push(`${columnName} INT(${length})`)
+    async integer(columnName: string, option?: BuilderOptionInterface): Promise<void> {
+        let length = 11
+        if(!option){
+            this.columns.push(`${columnName} INT(${length}) NOT NULL`)
+            return 
+        }
+
+        if(option.length){
+            length = option.length
+        }
+
+        if(option.nullable){
+            this.columns.push(`${columnName} INT(${length}) DEFAULT NULL`)
+        }  else {
+            this.columns.push(`${columnName} INT(${length}) NOT NULL`)
+        }
     }
 
-    async text(columnName: string): Promise<void> {
-        this.columns.push(`${columnName} TEXT`)
+    async text(columnName: string, option?: BuilderOptionInterface): Promise<void> {
+        if(!option){
+            this.columns.push(`${columnName} TEXT NOT NULL`)
+            return ;
+        }
+
+        if(option.nullable){
+            this.columns.push(`${columnName} TEXT DEFAULT NULL`)
+        } else {
+            this.columns.push(`${columnName} TEXT NOT NULL`)
+        }
     }
 
-    async timestamp(columnName: string): Promise<void> {
-        this.columns.push(`${columnName} TIMESTAMP`)
+    async timestamp(columnName: string, option?: BuilderOptionInterface): Promise<void> {
+        if(!option) {
+            this.columns.push(`${columnName} TIMESTAMP NOT NULL`)
+            return
+        }
+
+        if(option.nullable){
+            this.columns.push(`${columnName} TIMESTAMP DEFAULT NULL`)
+        } else {
+            this.columns.push(`${columnName} TIMESTAMP NOT NULL`)
+        }
     }
     
     async build(){

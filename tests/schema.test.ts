@@ -6,7 +6,11 @@ import { assertEquals, assert } from "https://deno.land/std/testing/asserts.ts";
 
 Deno.test({name: "schema test", async fn(): Promise<void> {
     let schema: SchemaInterface = new MySqlSchemaRepository()
-    await schema.drop('dora')
+    await schema.create('lalalark', async (table: BuilderInterface) => {
+        table.string('lala')
+        table.string('lalalength', {length: 45})
+        table.string('lalanullable', {length: 45, nullable: true})
+    })
     assertEquals(true, true)
     }, sanitizeResources: false, sanitizeOps: false
  })
