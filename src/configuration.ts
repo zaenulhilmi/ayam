@@ -18,7 +18,6 @@ class Configuration extends ConfigurationAbstract {
   }
 
   async saveFile(): Promise<void> {
-    console.log(this.fileLocation)
     let configFile = await Deno.create(this.fileLocation);
     configFile.close();
   }
