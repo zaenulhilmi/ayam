@@ -78,7 +78,6 @@ class MySqlBuilder implements BuilderInterface{
     async build(): Promise<void>{
         let joinnedColumns = this.columns.join(", ")
         this.query = this.query.replace("COLUMNS_PLACEHOLDER", joinnedColumns)
-        console.log(this.query)
         mysql.execute(this.query) 
     }
 }

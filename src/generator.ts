@@ -25,8 +25,14 @@ class Generator {
   }
 
   async getTemplate(): Promise<string> {
-    let text = await Deno.readTextFile("./src/templates/migration_file.ts");
-    return text;
+    try{
+      let filePath = new URL("templates/migration_file.ts", import.meta.url).pathname;
+      let text = await Deno.readTextFile(filePath);
+      return text;
+    } catch(e){
+      console.error(e.message)
+      throw e
+    }
   }
 
   async migrationText(): Promise<string> {
@@ -41,11 +47,11 @@ class Generator {
     let config = await Configuration.newInstance()
     let dir = await config.get('migrationDirectory')
     let text = await this.migrationText()
-    
+  
+    let realPath = await Deno.realPath('.')
     let isDirExist: boolean = true;
     try{
       let res = await Deno.stat(dir)
-      console.log(res)
     } catch(e){
       isDirExist = false
     }

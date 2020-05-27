@@ -1,4 +1,5 @@
 import ConfigurationAbstract from "./configuration_abstract.ts";
+
 class Configuration extends ConfigurationAbstract {
   fileLocation: string = "";
 
@@ -49,11 +50,7 @@ export default MySQL`;
   }
 
   async get(key: string): Promise<string> {
-    let config = await Configuration.newInstance()
-    let realPath = await Deno.realPath(".");
-    let start = config.fileLocation.indexOf(realPath);
-    let location = config.fileLocation.slice(start + realPath.length);
-    let conf = (await import(`..${location}`)).default;
+    let conf = (await import(this.fileLocation)).default;
     return conf[key]
   }
 
