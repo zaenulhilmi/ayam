@@ -1,7 +1,7 @@
-import SchemaInterface from "../src/schema_interface.ts"
-import MySqlSchemaRepository from "../src/mysql_schema_repository.ts"
-import BuilderInterface from "../src/builder_interface.ts"
-import { assertEquals} from "https://deno.land/std/testing/asserts.ts";
+import SchemaInterface from "../src/schema_interface.ts";
+import MySqlSchemaRepository from "../src/mysql_schema_repository.ts";
+import BuilderInterface from "../src/builder_interface.ts";
+import { assertEquals } from "https://deno.land/std/testing/asserts.ts";
 
 // Deno.test({name: "schema test", async fn(): Promise<void> {
 //     let schema: SchemaInterface = new MySqlSchemaRepository()

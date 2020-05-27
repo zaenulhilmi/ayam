@@ -1,5 +1,5 @@
 import { Case } from "../deps.ts";
-import Configuration from "./configuration.ts"
+import Configuration from "./configuration.ts";
 
 class Generator {
   command: string;
@@ -25,51 +25,53 @@ class Generator {
   }
 
   async getTemplate(): Promise<string> {
-    try{
-      let filePath = new URL("templates/migration_file.stub", import.meta.url).pathname;
+    try {
+      let filePath =
+        new URL("templates/migration_file.stub", import.meta.url).pathname;
       let text = await Deno.readTextFile(filePath);
       return text;
-    } catch(e){
-      console.error(e.message)
-      throw e
+    } catch (e) {
+      console.error(e.message);
+      throw e;
     }
   }
 
   async migrationText(): Promise<string> {
-    let text = await this.getTemplate()
-    text = text.replace("CLASS_NAME", Case.pascalCase(this.command))
-    text = text.replace("CLASS_NAME", Case.pascalCase(this.command))
-    return text
+    let text = await this.getTemplate();
+    text = text.replace("CLASS_NAME", Case.pascalCase(this.command));
+    text = text.replace("CLASS_NAME", Case.pascalCase(this.command));
+    return text;
   }
 
   async execute(): Promise<void> {
-    let fileName = await this.getFileName()
-    let config = await Configuration.newInstance()
-    let dir = await config.get('migrationDirectory')
-    let text = await this.migrationText()
+    let fileName = await this.getFileName();
+    let config = await Configuration.newInstance();
+    let dir = await config.get("migrationDirectory");
+    let text = await this.migrationText();
     let isDirExist: boolean = true;
-    try{
-      await Deno.stat(dir)
-    } catch(e){
-      isDirExist = false
+    try {
+      await Deno.stat(dir);
+    } catch (e) {
+      isDirExist = false;
     }
-    if(!isDirExist){
-      await Deno.mkdir(dir, {recursive: true})
+    if (!isDirExist) {
+      await Deno.mkdir(dir, { recursive: true });
     }
 
     try {
-      await Deno.stat(`${dir}/schema_interface.ts`)
-      await Deno.stat(`${dir}/builder_interface.ts`)
-    } catch(e){
-      let schemaFilePath = new URL("schema_interface.ts", import.meta.url).pathname;
-      let builderFilePath = new URL("builder_interface.ts", import.meta.url).pathname;
-      await Deno.copyFile(schemaFilePath, `${dir}/schema_interface.ts`)
-      await Deno.copyFile(builderFilePath, `${dir}/builder_interface.ts`)
+      await Deno.stat(`${dir}/schema_interface.ts`);
+      await Deno.stat(`${dir}/builder_interface.ts`);
+    } catch (e) {
+      let schemaFilePath =
+        new URL("schema_interface.ts", import.meta.url).pathname;
+      let builderFilePath =
+        new URL("builder_interface.ts", import.meta.url).pathname;
+      await Deno.copyFile(schemaFilePath, `${dir}/schema_interface.ts`);
+      await Deno.copyFile(builderFilePath, `${dir}/builder_interface.ts`);
     }
 
-    let fullPath = `${dir}/${fileName}`
-    await Deno.writeTextFile(fullPath, text)
-
+    let fullPath = `${dir}/${fileName}`;
+    await Deno.writeTextFile(fullPath, text);
   }
 
   _getPrefix(timestamps: Array<Number>): string {

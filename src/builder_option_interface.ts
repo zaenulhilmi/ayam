@@ -1,6 +1,6 @@
 interface BuilderOptionInterface {
-    length?: number,
-    nullable?: boolean
+  length?: number;
+  nullable?: boolean;
 }
 
-export default BuilderOptionInterface
+export default BuilderOptionInterface;

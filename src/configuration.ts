@@ -51,7 +51,7 @@ export default MySQL`;
 
   async get(key: string): Promise<string> {
     let conf = (await import(this.fileLocation)).default;
-    return conf[key]
+    return conf[key];
   }
 
   async remove(): Promise<void> {

@@ -1,6 +1,6 @@
 import { assertEquals, assert } from "https://deno.land/std/testing/asserts.ts";
 import Generator from "./../src/generator.ts";
-import Configuration from "./../src/configuration.ts"
+import Configuration from "./../src/configuration.ts";
 
 Deno.test("generate a name for migration", async () => {
   let command: string = "create_users_table";
@@ -68,36 +68,33 @@ export default CreateUsersTable;
   assertEquals(templateText, text);
 });
 Deno.test("add file to migration directory", async () => {
-  let config = await Configuration.newInstance()
-  await config.create()
-  let directory = await config.get('migrationDirectory')
+  let config = await Configuration.newInstance();
+  await config.create();
+  let directory = await config.get("migrationDirectory");
 
- let currentFileTotal = 0;
+  let currentFileTotal = 0;
   try {
- let files = await Deno.readDir(directory) 
- for await (let file of files){
-    currentFileTotal += 1
- }
-  } catch (e){
-    
+    let files = await Deno.readDir(directory);
+    for await (let file of files) {
+      currentFileTotal += 1;
+    }
+  } catch (e) {
   }
 
   let command: string = "createUsersTable";
   let generator = new Generator(command);
   await generator.execute();
 
- let afterFiles = await Deno.readDir(directory) 
- let afterTotal = 0;
- for await (let file of afterFiles){
-    afterTotal += 1
- }
+  let afterFiles = await Deno.readDir(directory);
+  let afterTotal = 0;
+  for await (let file of afterFiles) {
+    afterTotal += 1;
+  }
 
-  assertEquals(afterTotal, currentFileTotal+1)
+  assertEquals(afterTotal, currentFileTotal + 1);
 
-  await Deno.remove(directory, {recursive: true});
-
-})
-
+  await Deno.remove(directory, { recursive: true });
+});
 
 function generatePrefix() {
   let now = new Date();

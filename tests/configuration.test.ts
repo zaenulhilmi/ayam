@@ -8,12 +8,12 @@ Deno.test("configuration doesn't exist", async () => {
   let tup = await Configuration.newInstance();
   let shouldRemove = true;
   try {
-    await Deno.stat(tup.fileLocation)
-  } catch(e){
-    shouldRemove = false
+    await Deno.stat(tup.fileLocation);
+  } catch (e) {
+    shouldRemove = false;
   }
-  if(shouldRemove){
-    await tup.remove()
+  if (shouldRemove) {
+    await tup.remove();
   }
   let result = await tup.exist();
   assertEquals(result, false);
@@ -69,7 +69,7 @@ Deno.test("remove configuration file", async () => {
 Deno.test("get configuration file", async () => {
   let config = await Configuration.newInstance();
   await config.create();
-  let dialect = await config.get('dialect')
+  let dialect = await config.get("dialect");
   assertEquals(dialect, "mysql");
   await config.remove();
 });
