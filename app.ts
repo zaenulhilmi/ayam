@@ -3,6 +3,7 @@
 import { Denomander } from "./deps.ts";
 import Configuration from "./src/configuration.ts";
 import Generator from "./src/generator.ts"
+async function myCLI(): Promise<void> {
 
 const program = new Denomander(
   {
@@ -31,4 +32,9 @@ if (program.initiate) {
 if (program.generate) {
   let generator = new Generator(program.commandName)
   await generator.execute()
+}
+}
+
+if(import.meta.main){
+  await myCLI()
 }

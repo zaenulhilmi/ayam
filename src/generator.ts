@@ -47,16 +47,24 @@ class Generator {
     let config = await Configuration.newInstance()
     let dir = await config.get('migrationDirectory')
     let text = await this.migrationText()
-  
-    let realPath = await Deno.realPath('.')
     let isDirExist: boolean = true;
     try{
-      let res = await Deno.stat(dir)
+      await Deno.stat(dir)
     } catch(e){
       isDirExist = false
     }
     if(!isDirExist){
       await Deno.mkdir(dir, {recursive: true})
+    }
+
+    try {
+      await Deno.stat(`${dir}/schema_interface.ts`)
+      await Deno.stat(`${dir}/builder_interface.ts`)
+    } catch(e){
+      let schemaFilePath = new URL("schema_interface.ts", import.meta.url).pathname;
+      let builderFilePath = new URL("builder_interface.ts", import.meta.url).pathname;
+      await Deno.copyFile(schemaFilePath, `${dir}/schema_interface.ts`)
+      await Deno.copyFile(builderFilePath, `${dir}/builder_interface.ts`)
     }
 
     let fullPath = `${dir}/${fileName}`
