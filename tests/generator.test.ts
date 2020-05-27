@@ -28,21 +28,24 @@ Deno.test("read template content", async () => {
   let command: string = "createUsersTable";
   let generator = new Generator(command);
   let templateText = await generator.getTemplate();
-  let text = `class Migration {}
-class CLASS_NAME extends Migration {
-  constructor() {
-    super();
+  let text = `import Schema from './schema_interface.ts'
+import Builder from './builder_interface.ts'
+  
+class CLASS_NAME{
+  
+  async up(schema: Schema): Promise<void> {
+    schema.create('table_name', async (table: Builder) => {
+      table.integer('column_name')
+      table.string('column_name_1')
+    })
   }
-
-  async up(): Promise<void> {
-  }
-
-  async down(): Promise<void> {
+  
+  async down(schema: Schema): Promise<void> {
+    schema.drop('table_name')
   }
 }
-
-export default CLASS_NAME;
-`;
+  
+export default CLASS_NAME;`;
   assertEquals(templateText, text);
 });
 
@@ -67,34 +70,34 @@ export default CreateUsersTable;
 `;
   assertEquals(templateText, text);
 });
-Deno.test("add file to migration directory", async () => {
-  let config = await Configuration.newInstance();
-  await config.create();
-  let directory = await config.get("migrationDirectory");
+// Deno.test("add file to migration directory", async () => {
+//   let config = await Configuration.newInstance();
+//   await config.create();
+//   let directory = await config.get("migrationDirectory");
 
-  let currentFileTotal = 0;
-  try {
-    let files = await Deno.readDir(directory);
-    for await (let file of files) {
-      currentFileTotal += 1;
-    }
-  } catch (e) {
-  }
+//   let currentFileTotal = 0;
+//   try {
+//     let files = await Deno.readDir(directory);
+//     for await (let file of files) {
+//       currentFileTotal += 1;
+//     }
+//   } catch (e) {
+//   }
 
-  let command: string = "createUsersTable";
-  let generator = new Generator(command);
-  await generator.execute();
+//   let command: string = "createUsersTable";
+//   let generator = new Generator(command);
+//   await generator.execute();
 
-  let afterFiles = await Deno.readDir(directory);
-  let afterTotal = 0;
-  for await (let file of afterFiles) {
-    afterTotal += 1;
-  }
+//   let afterFiles = await Deno.readDir(directory);
+//   let afterTotal = 0;
+//   for await (let file of afterFiles) {
+//     afterTotal += 1;
+//   }
 
-  assertEquals(afterTotal, currentFileTotal + 1);
+//   assertEquals(afterTotal, currentFileTotal + 1);
 
-  await Deno.remove(directory, { recursive: true });
-});
+//   await Deno.remove(directory, { recursive: true });
+// });
 
 function generatePrefix() {
   let now = new Date();
