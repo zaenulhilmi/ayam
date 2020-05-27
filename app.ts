@@ -3,6 +3,7 @@
 import { Denomander } from "./deps.ts";
 import Configuration from "./src/configuration.ts";
 import Generator from "./src/generator.ts";
+import Migration from "./src/migration.ts";
 async function myCLI(): Promise<void> {
   const program = new Denomander(
     {
@@ -16,6 +17,7 @@ async function myCLI(): Promise<void> {
   program
     .command("initiate", "Initial Config")
     .command("generate [commandName]", "create migration file")
+    .command("migrate", "migrating")
     .parse(Deno.args);
 
   if (program.initiate) {
@@ -31,6 +33,11 @@ async function myCLI(): Promise<void> {
   if (program.generate) {
     let generator = new Generator(program.commandName);
     await generator.execute();
+  }
+
+  if(program.migrate){
+    let migration = new Migration()
+    await migration.execute()
   }
 }
 

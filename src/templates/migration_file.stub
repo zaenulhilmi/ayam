@@ -1,5 +1,5 @@
-import Schema from './interfaces/schema_interface.ts'
-import Builder from './interfaces/builder_interface.ts'
+import Schema from './schema_interface.ts'
+import Builder from './builder_interface.ts'
 
 class CLASS_NAME{
 

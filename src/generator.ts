@@ -59,16 +59,19 @@ class Generator {
     }
 
     try {
-      await Deno.stat(`${dir}/interfaces/schema_interface.ts`);
-      await Deno.stat(`${dir}/interfaces/builder_interface.ts`);
+      await Deno.stat(`${dir}/schema_interface.ts`);
+      await Deno.stat(`${dir}/builder_interface.ts`);
+      await Deno.stat(`${dir}/builder_option_interface.ts`);
     } catch (e) {
       let schemaFilePath =
         new URL("schema_interface.ts", import.meta.url).pathname;
       let builderFilePath =
         new URL("builder_interface.ts", import.meta.url).pathname;
-      await Deno.mkdir(`${dir}/interfaces`)
-      await Deno.copyFile(schemaFilePath, `${dir}/interfaces/schema_interface.ts`);
-      await Deno.copyFile(builderFilePath, `${dir}/interfaces/builder_interface.ts`);
+      let builderOptionFilePath =
+        new URL("builder_interface.ts", import.meta.url).pathname;
+      await Deno.copyFile(schemaFilePath, `${dir}/schema_interface.ts`);
+      await Deno.copyFile(builderFilePath, `${dir}/builder_interface.ts`);
+      await Deno.copyFile(builderOptionFilePath, `${dir}/builder_option_interface.ts`);
     }
 
     let fullPath = `${dir}/${fileName}`;
