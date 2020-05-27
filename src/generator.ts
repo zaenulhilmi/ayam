@@ -26,7 +26,7 @@ class Generator {
 
   async getTemplate(): Promise<string> {
     try{
-      let filePath = new URL("templates/migration_file.ts", import.meta.url).pathname;
+      let filePath = new URL("templates/migration_file.stub", import.meta.url).pathname;
       let text = await Deno.readTextFile(filePath);
       return text;
     } catch(e){
