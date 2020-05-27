@@ -13,7 +13,7 @@ class MySqlBuilder implements BuilderInterface{
         this.query = `CREATE TABLE ${this.tableName} ( COLUMNS_PLACEHOLDER );`
     }
 
-    async string(columnName: string, option?: BuilderOptionInterface): Promise<void> {
+    string(columnName: string, option?: BuilderOptionInterface): void {
         let length = 100
         if(!option){
             this.columns.push(`${columnName} VARCHAR(${length}) NOT NULL`)
@@ -31,7 +31,7 @@ class MySqlBuilder implements BuilderInterface{
         }
     }
 
-    async integer(columnName: string, option?: BuilderOptionInterface): Promise<void> {
+    integer(columnName: string, option?: BuilderOptionInterface): void {
         let length = 11
         if(!option){
             this.columns.push(`${columnName} INT(${length}) NOT NULL`)
@@ -49,7 +49,7 @@ class MySqlBuilder implements BuilderInterface{
         }
     }
 
-    async text(columnName: string, option?: BuilderOptionInterface): Promise<void> {
+    text(columnName: string, option?: BuilderOptionInterface): void {
         if(!option){
             this.columns.push(`${columnName} TEXT NOT NULL`)
             return ;
@@ -62,7 +62,7 @@ class MySqlBuilder implements BuilderInterface{
         }
     }
 
-    async timestamp(columnName: string, option?: BuilderOptionInterface): Promise<void> {
+    timestamp(columnName: string, option?: BuilderOptionInterface): void {
         if(!option) {
             this.columns.push(`${columnName} TIMESTAMP NOT NULL`)
             return
@@ -75,7 +75,7 @@ class MySqlBuilder implements BuilderInterface{
         }
     }
     
-    async build(){
+    async build(): Promise<void>{
         let joinnedColumns = this.columns.join(", ")
         this.query = this.query.replace("COLUMNS_PLACEHOLDER", joinnedColumns)
         console.log(this.query)
