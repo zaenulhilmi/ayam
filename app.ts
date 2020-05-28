@@ -1,5 +1,3 @@
-//import { Denomander } from './deps.ts'
-
 import { Denomander } from "./deps.ts";
 import Configuration from "./src/configuration.ts";
 import Generator from "./src/generator.ts";
@@ -35,18 +33,21 @@ async function myCLI(): Promise<void> {
   if (program.generate) {
     let generator = new Generator(program.commandName);
     await generator.execute();
+    console.log('generate a file')
   }
 
   if (program.migrate) {
     let migration = new MysqlMigration();
     let migrate = new Migrate(migration);
     await migrate.execute();
+    console.log("migrated")
   }
 
   if (program.rollback) {
     let migration = new MysqlMigration();
     let migrate = new Migrate(migration);
     await migrate.undo();
+    console.log("rollback")
   }
 }
 
