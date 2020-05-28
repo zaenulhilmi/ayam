@@ -1,5 +1,4 @@
 import MigrationInterface from './migration_interface.ts'
-import mysql from './driver/mysql.ts'
 
 interface MigrationData {
    id: Number,
@@ -9,7 +8,7 @@ interface MigrationData {
    updatedAt: Date
 }
 
-class MysqlMigration implements MigrationInterface{
+class MemoryMigration implements MigrationInterface{
 
     data: Array<MigrationData> = []
 
