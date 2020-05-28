@@ -7,7 +7,6 @@ class MySqlSchemaRepository implements SchemaInterface {
   async hasTable(tableName: string): Promise<boolean> {
     try {
       let result = await mysql.query(`SHOW TABLES LIKE ?`, [tableName]);
-      console.log(result)
       if (result.length > 0) {
         return true;
       }

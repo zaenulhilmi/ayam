@@ -1,6 +1,6 @@
-interface CommandInterface{
-   execute(): Promise<void> 
-   undo(): Promise<void>
+interface CommandInterface {
+  execute(): Promise<void>;
+  undo(): Promise<void>;
 }
 
-export default CommandInterface
+export default CommandInterface;

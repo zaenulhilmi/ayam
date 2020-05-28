@@ -13,7 +13,7 @@ class MySqlBuilder implements BuilderInterface {
   }
 
   id(): void {
-    this.columns.push('id INT NOT NULL PRIMARY KEY AUTO_INCREMENT')
+    this.columns.push("id INT NOT NULL PRIMARY KEY AUTO_INCREMENT");
   }
 
   string(columnName: string, option?: BuilderOptionInterface): void {
@@ -79,8 +79,8 @@ class MySqlBuilder implements BuilderInterface {
   }
 
   timestamps(): void {
-      this.columns.push(`created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP`);
-      this.columns.push(`updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP`);
+    this.columns.push(`created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP`);
+    this.columns.push(`updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP`);
   }
 
   async build(): Promise<void> {

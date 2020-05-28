@@ -13,7 +13,7 @@ interface BuilderInterface {
 
   timestamp(columnName: string, option?: BuilderOptionInterface): void;
 
-  timestamps(): void
+  timestamps(): void;
 
   build(): Promise<void>;
 }

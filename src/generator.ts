@@ -71,7 +71,10 @@ class Generator {
         new URL("builder_interface.ts", import.meta.url).pathname;
       await Deno.copyFile(schemaFilePath, `${dir}/schema_interface.ts`);
       await Deno.copyFile(builderFilePath, `${dir}/builder_interface.ts`);
-      await Deno.copyFile(builderOptionFilePath, `${dir}/builder_option_interface.ts`);
+      await Deno.copyFile(
+        builderOptionFilePath,
+        `${dir}/builder_option_interface.ts`,
+      );
     }
 
     let fullPath = `${dir}/${fileName}`;

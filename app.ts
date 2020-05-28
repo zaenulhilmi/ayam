@@ -37,16 +37,16 @@ async function myCLI(): Promise<void> {
     await generator.execute();
   }
 
-  if(program.migrate){
-    let migration = new MysqlMigration()
-    let migrate = new Migrate(migration)
-    await migrate.execute()
+  if (program.migrate) {
+    let migration = new MysqlMigration();
+    let migrate = new Migrate(migration);
+    await migrate.execute();
   }
 
-  if(program.rollback){
-    let migration = new MysqlMigration()
-    let migrate = new Migrate(migration)
-    await migrate.undo()
+  if (program.rollback) {
+    let migration = new MysqlMigration();
+    let migrate = new Migrate(migration);
+    await migrate.undo();
   }
 }
 
