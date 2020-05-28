@@ -3,7 +3,8 @@
 import { Denomander } from "./deps.ts";
 import Configuration from "./src/configuration.ts";
 import Generator from "./src/generator.ts";
-import Migration from "./src/migration.ts";
+import MysqlMigration from "./src/mysql_migration.ts";
+import Migrate from "./src/migrate.ts";
 async function myCLI(): Promise<void> {
   const program = new Denomander(
     {
@@ -36,8 +37,9 @@ async function myCLI(): Promise<void> {
   }
 
   if(program.migrate){
-    let migration = new Migration()
-    await migration.execute()
+    let migration = new MysqlMigration()
+    let migrate = new Migrate(migration)
+    await migrate.execute()
   }
 }
 
