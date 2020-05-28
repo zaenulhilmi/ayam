@@ -19,6 +19,7 @@ async function myCLI(): Promise<void> {
     .command("initiate", "Initial Config")
     .command("generate [commandName]", "create migration file")
     .command("migrate", "migrating")
+    .command("rollback", "rollback")
     .parse(Deno.args);
 
   if (program.initiate) {
@@ -40,6 +41,12 @@ async function myCLI(): Promise<void> {
     let migration = new MysqlMigration()
     let migrate = new Migrate(migration)
     await migrate.execute()
+  }
+
+  if(program.rollback){
+    let migration = new MysqlMigration()
+    let migrate = new Migrate(migration)
+    await migrate.undo()
   }
 }
 

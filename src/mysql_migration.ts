@@ -26,6 +26,8 @@ class MysqlMigration implements MigrationInterface{
     }
 
     async rollback(): Promise<void>{
+        let lastStepMigration = await this._getLastStepData()
+        await this._executeLastStepData(lastStepMigration)
         console.log('rollback mysql')
     }
 
@@ -97,11 +99,24 @@ class MysqlMigration implements MigrationInterface{
     }
 
     async _getLastStepData() {
-
+        let lastMigration = await mysql.query('SELECT * FROM migrations WHERE step = (SELECT MAX(step) FROM migrations)')
+        if(lastMigration.length > 0) {
+            return lastMigration
+        }
+        return {id: 0, file_name: 'lala', step: 0, created_at: new Date(), updated_at: new Date()}
     }
 
-    async _executeLastStepData() {
-
+    async _executeLastStepData(lastStepMigrations: Array<MigrationData>) {
+        let config = await Configuration.newInstance()
+        let migrationDir = await config.get('migrationDirectory')
+        let projectDir = await Deno.cwd()
+        for await (let x of lastStepMigrations){
+            let Class = (await import(`${projectDir}/${migrationDir}/${x.file_name}`)).default
+            let mysqlSchemaRepository = new MySqlSchemaRepository()
+            let object = new Class()
+            await mysql.execute(`DELETE FROM migrations WHERE id=?`, [x.id])
+            await object.down(mysqlSchemaRepository)
+        }
     }
 }
 
