@@ -12,6 +12,10 @@ class MySqlBuilder implements BuilderInterface {
     this.query = `CREATE TABLE ${this.tableName} ( COLUMNS_PLACEHOLDER );`;
   }
 
+  id(): void {
+    this.columns.push('id INT NOT NULL PRIMARY KEY AUTO_INCREMENT')
+  }
+
   string(columnName: string, option?: BuilderOptionInterface): void {
     let length = 100;
     if (!option) {
@@ -72,6 +76,11 @@ class MySqlBuilder implements BuilderInterface {
     } else {
       this.columns.push(`${columnName} TIMESTAMP NOT NULL`);
     }
+  }
+
+  timestamps(): void {
+      this.columns.push(`created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP`);
+      this.columns.push(`updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP`);
   }
 
   async build(): Promise<void> {

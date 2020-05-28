@@ -1,36 +1,99 @@
 import MigrationInterface from './migration_interface.ts'
 import mysql from './driver/mysql.ts'
+import MySqlSchemaRepository from './mysql_schema_repository.ts';
+import SchemaInterface from './schema_interface.ts';
+import BuilderInterface from './builder_interface.ts'
+import Configuration from './configuration.ts';
 
 interface MigrationData {
-   id: Number,
-   fileName:  string,
-   step: Number,
-   createdAt: Date,
-   updatedAt: Date
+   id?: number,
+   file_name:  string,
+   step: number,
+   created_at?: Date,
+   updated_at?: Date
 }
 
 class MysqlMigration implements MigrationInterface{
 
     data: Array<MigrationData> = []
+    
 
     async migrate(): Promise<void>{
-        // check latest migration
-        console.log('migrate mysql')
+        await this._createMigrationTableIfNotExist();
+        let lastMigration = await this._getLastMigrationData();
+        this.data = await this._getSortedUnexecutedMigrationData(lastMigration)
+        await this._executeData()
     }
+
     async rollback(): Promise<void>{
         console.log('rollback mysql')
     }
 
-    async _getLastMigrationData(): Promise<MigrationData> {
-        return {id: 1, fileName: 'lala', step: 1, createdAt: new Date(), updatedAt: new Date()}
+    async _createMigrationTableIfNotExist(): Promise<void> {
+        let schema: SchemaInterface = new MySqlSchemaRepository();
+        let dirExist = await schema.hasTable('migrations')
+        if(dirExist) {
+            return
+        }
+        schema.create('migrations', async (table: BuilderInterface) => {
+            table.id()
+            table.string('file_name')
+            table.integer('step')
+            table.timestamps()
+        })
     }
 
-    async _getSortedUnexecutedData() {
+    async _getLastMigrationData(): Promise<MigrationData> {
+        let lastMigration = await mysql.query('SELECT * FROM migrations ORDER BY id DESC LIMIT 1')
+        if(lastMigration.length > 0) {
+            return lastMigration[0]
+        }
+        return {id: 0, file_name: 'lala', step: 0, created_at: new Date(), updated_at: new Date()}
+    }
 
+    async _getSortedUnexecutedMigrationData(lastMigration: MigrationData): Promise<Array<MigrationData>> {
+        let config = await Configuration.newInstance()
+        let migrationDir = await config.get('migrationDirectory')
+
+        let result: Array<string> = []
+        if(lastMigration.id == 0) {
+            for await ( let dir of await Deno.readDir(migrationDir)) {
+                if(dir.name.startsWith("20") && dir.name.endsWith(".ts")){
+                    result.push(dir.name)
+                }
+            }
+        } else {
+            for await ( let dir of await Deno.readDir(migrationDir)) {
+                console.log('-', dir.name, lastMigration.file_name, dir.name > lastMigration.file_name)
+                if(dir.name.startsWith("20") && dir.name.endsWith(".ts") && dir.name > lastMigration.file_name){
+                    console.log(dir.name)
+                    result.push(dir.name)
+                }
+            }
+        }
+
+        result.sort()
+
+        let objectResult: Array<MigrationData> = []
+        for await (let fileName of result){
+           let data = {file_name: fileName, step: lastMigration.step + 1} 
+           objectResult.push(data)
+
+        }
+        return objectResult;
     }
 
     async _executeData() {
-
+        let config = await Configuration.newInstance()
+        let migrationDir = await config.get('migrationDirectory')
+        let projectDir = await Deno.cwd()
+        for await (let x of this.data){
+            let Class = (await import(`${projectDir}/${migrationDir}/${x.file_name}`)).default
+            let mysqlSchemaRepository = new MySqlSchemaRepository()
+            let object = new Class()
+            await mysql.execute(`INSERT INTO migrations SET file_name=?, step=?`, [x.file_name, x.step])
+            await object.up(mysqlSchemaRepository)
+        }
     }
 
     async _getLastStepData() {
