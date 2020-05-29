@@ -35,26 +35,26 @@ async function myCLI(): Promise<void> {
   if (program.generate) {
     let generator = new Generator(program.commandName);
     await generator.execute();
-    console.log('generate a file')
+    console.log("generate a file");
   }
 
   if (program.migrate) {
     let migration = new MysqlMigration();
     let migrate = new Migrate(migration);
     await migrate.execute();
-    console.log("migrated")
+    console.log("migrated");
   }
 
   if (program.rollback) {
     let migration = new MysqlMigration();
     let migrate = new Migrate(migration);
     await migrate.undo();
-    console.log("rollback")
+    console.log("rollback");
   }
 
-  if(program.pg){
-    let pg  = new PostgresSchemaRepository()
-    console.log(await pg.drop('test'))
+  if (program.pg) {
+    let pg = new PostgresSchemaRepository();
+    console.log(await pg.drop("test"));
   }
 }
 

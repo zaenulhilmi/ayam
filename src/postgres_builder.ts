@@ -2,7 +2,6 @@ import BuilderInterface from "./builder_interface.ts";
 import BuilderOptionInterface from "./builder_option_interface.ts";
 
 class PostgresBuilder implements BuilderInterface {
-
   tableName: string;
   query: string;
   columns: Array<string> = [];
@@ -20,7 +19,6 @@ class PostgresBuilder implements BuilderInterface {
   }
 
   integer(columnName: string, option?: BuilderOptionInterface): void {
-
   }
 
   text(columnName: string, option?: BuilderOptionInterface): void {
