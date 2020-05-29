@@ -88,6 +88,12 @@ class MySqlBuilder implements BuilderInterface {
     this.query = this.query.replace("COLUMNS_PLACEHOLDER", joinnedColumns);
     mysql.execute(this.query);
   }
+
+  toSql(): string {
+    let joinnedColumns = this.columns.join(", ");
+    this.query = this.query.replace("COLUMNS_PLACEHOLDER", joinnedColumns);
+    return this.query
+  }
 }
 
 export default MySqlBuilder;

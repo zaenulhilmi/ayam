@@ -16,6 +16,7 @@ interface BuilderInterface {
   timestamps(): void;
 
   build(): Promise<void>;
+  toSql(): string;
 }
 
 export default BuilderInterface;

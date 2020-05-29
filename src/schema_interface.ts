@@ -9,6 +9,7 @@ interface SchemaInterface {
   ): Promise<void>;
   drop(tableName: string): Promise<void>;
   rename(oldTableName: string, newTableName: string): Promise<void>;
+  toSql(): string;
 }
 
 export default SchemaInterface;

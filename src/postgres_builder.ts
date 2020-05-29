@@ -83,6 +83,10 @@ class PostgresBuilder implements BuilderInterface {
     this.query = this.query.replace("COLUMNS_PLACEHOLDER", joinnedColumns);
     await postgres.query(this.query);
   }
+
+  toSql(): string {
+    return ""
+  }
 }
 
 export default PostgresBuilder;
