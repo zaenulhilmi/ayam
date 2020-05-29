@@ -3,6 +3,8 @@ import Configuration from "./src/configuration.ts";
 import Generator from "./src/generator.ts";
 import MysqlMigration from "./src/mysql_migration.ts";
 import Migrate from "./src/migrate.ts";
+import MigrationInterface from "./src/migration_interface.ts";
+import CommandInterface from "./src/command_interface.ts";
 import PostgresSchemaRepository from "./src/postgres_schema_repository.ts";
 async function myCLI(): Promise<void> {
   const program = new Denomander(
@@ -39,15 +41,15 @@ async function myCLI(): Promise<void> {
   }
 
   if (program.migrate) {
-    let migration = new MysqlMigration();
-    let migrate = new Migrate(migration);
+    let migration: MigrationInterface = new MysqlMigration();
+    let migrate: CommandInterface = new Migrate(migration);
     await migrate.execute();
     console.log("migrated");
   }
 
   if (program.rollback) {
-    let migration = new MysqlMigration();
-    let migrate = new Migrate(migration);
+    let migration: MigrationInterface = new MysqlMigration();
+    let migrate: CommandInterface = new Migrate(migration);
     await migrate.undo();
     console.log("rollback");
   }
