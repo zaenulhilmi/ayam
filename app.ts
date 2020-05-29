@@ -3,6 +3,7 @@ import Configuration from "./src/configuration.ts";
 import Generator from "./src/generator.ts";
 import MysqlMigration from "./src/mysql_migration.ts";
 import Migrate from "./src/migrate.ts";
+import PostgresSchemaRepository from "./src/postgres_schema_repository.ts";
 async function myCLI(): Promise<void> {
   const program = new Denomander(
     {
@@ -18,6 +19,7 @@ async function myCLI(): Promise<void> {
     .command("generate [commandName]", "create migration file")
     .command("migrate", "migrating")
     .command("rollback", "rollback")
+    .command("pg", "testing")
     .parse(Deno.args);
 
   if (program.initiate) {
@@ -48,6 +50,11 @@ async function myCLI(): Promise<void> {
     let migrate = new Migrate(migration);
     await migrate.undo();
     console.log("rollback")
+  }
+
+  if(program.pg){
+    let pg  = new PostgresSchemaRepository()
+    console.log(await pg.drop('test'))
   }
 }
 
