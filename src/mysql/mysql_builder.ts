@@ -1,26 +1,30 @@
-import BuilderInterface from "./builder_interface.ts";
-import mysql from "./driver/mysql.ts";
-import BuilderOptionInterface from "./builder_option_interface.ts";
+import BuilderInterface from "./../interfaces/builder_interface.ts";
+import mysql from "./../driver/mysql.ts";
+import BuilderOptionInterface from "./../interfaces/builder_option_interface.ts";
 
 class MySqlBuilder implements BuilderInterface {
   tableName: string;
   query: string;
   columns: Array<string> = [];
 
-  constructor(tableName: string) {
+  constructor(tableName: string, action: string) {
     this.tableName = tableName;
-    this.query = `CREATE TABLE ${this.tableName} ( COLUMNS_PLACEHOLDER );`;
+    if(action == 'create'){
+      this.query = `CREATE TABLE ${this.tableName} ( COLUMNS_PLACEHOLDER );`;
+    } else {
+      this.query = `ALTER TABLE ${this.tableName} ( COLUMNS_PLACEHOLDER );`;
+    }
   }
 
   id(): void {
     this.columns.push("id INT NOT NULL PRIMARY KEY AUTO_INCREMENT");
   }
 
-  string(columnName: string, option?: BuilderOptionInterface): void {
+  string(columnName: string, option?: BuilderOptionInterface): BuilderInterface {
     let length = 100;
     if (!option) {
       this.columns.push(`${columnName} VARCHAR(${length}) NOT NULL`);
-      return;
+      return this;
     }
 
     if (option.length) {
@@ -32,13 +36,14 @@ class MySqlBuilder implements BuilderInterface {
     } else {
       this.columns.push(`${columnName} VARCHAR(${length}) NOT NULL`);
     }
+    return this
   }
 
-  integer(columnName: string, option?: BuilderOptionInterface): void {
+  integer(columnName: string, option?: BuilderOptionInterface): BuilderInterface {
     let length = 11;
     if (!option) {
       this.columns.push(`${columnName} INT(${length}) NOT NULL`);
-      return;
+      return this;
     }
 
     if (option.length) {
@@ -50,6 +55,7 @@ class MySqlBuilder implements BuilderInterface {
     } else {
       this.columns.push(`${columnName} INT(${length}) NOT NULL`);
     }
+    return this;
   }
 
   text(columnName: string, option?: BuilderOptionInterface): void {
@@ -81,6 +87,10 @@ class MySqlBuilder implements BuilderInterface {
   timestamps(): void {
     this.columns.push(`created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP`);
     this.columns.push(`updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP`);
+  }
+
+  nullable(): BuilderInterface {
+    return this
   }
 
   async build(): Promise<void> {

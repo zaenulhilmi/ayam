@@ -1,6 +1,6 @@
-import SchemaInterface from "./schema_interface.ts";
-import mysql from "./driver/mysql.ts";
-import BuilderInterface from "./builder_interface.ts";
+import SchemaInterface from "./../interfaces/schema_interface.ts";
+import mysql from "./../driver/mysql.ts";
+import BuilderInterface from "./../interfaces/builder_interface.ts";
 import MySqlBuilder from "./mysql_builder.ts";
 
 class MySqlSchemaRepository implements SchemaInterface {
@@ -57,7 +57,7 @@ class MySqlSchemaRepository implements SchemaInterface {
     tableName: string,
     callback: (builder: BuilderInterface) => void,
   ): Promise<void> {
-    let mysqlBuilder: BuilderInterface = new MySqlBuilder(tableName);
+    let mysqlBuilder: BuilderInterface = new MySqlBuilder(tableName, 'create');
     callback(mysqlBuilder);
     mysqlBuilder.build();
   }

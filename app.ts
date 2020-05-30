@@ -1,11 +1,12 @@
 import { Denomander } from "./deps.ts";
 import Configuration from "./src/configuration.ts";
 import Generator from "./src/generator.ts";
-import MysqlMigration from "./src/mysql_migration.ts";
+import MysqlMigration from "./src/mysql/mysql_migration.ts";
+import BuilderInterface from "./src/interfaces/builder_interface.ts";
 import Migrate from "./src/migrate.ts";
-import MigrationInterface from "./src/migration_interface.ts";
-import CommandInterface from "./src/command_interface.ts";
-import PostgresSchemaRepository from "./src/postgres_schema_repository.ts";
+import MigrationInterface from "./src/interfaces/migration_interface.ts";
+import CommandInterface from "./src/interfaces/command_interface.ts";
+import PostgresSchemaRepository from "./src/postgres/postgres_schema_repository.ts";
 async function myCLI(): Promise<void> {
   const program = new Denomander(
     {
@@ -55,8 +56,12 @@ async function myCLI(): Promise<void> {
   }
 
   if (program.pg) {
-    let pg = new PostgresSchemaRepository();
-    console.log(await pg.drop("test"));
+    let schema = new PostgresSchemaRepository();
+    await schema.drop('users');
+    await schema.create('users', async (table: BuilderInterface) => {
+      table.id()
+      table.string("name").nullable()
+    })
   }
 }
 

@@ -1,9 +1,9 @@
-import MigrationInterface from "./migration_interface.ts";
-import mysql from "./driver/mysql.ts";
+import MigrationInterface from "./../interfaces/migration_interface.ts";
+import mysql from "./../driver/mysql.ts";
 import MySqlSchemaRepository from "./mysql_schema_repository.ts";
-import SchemaInterface from "./schema_interface.ts";
-import BuilderInterface from "./builder_interface.ts";
-import Configuration from "./configuration.ts";
+import SchemaInterface from "./../interfaces/schema_interface.ts";
+import BuilderInterface from "./../interfaces/builder_interface.ts";
+import Configuration from "./../configuration.ts";
 
 interface MigrationData {
   id?: number;

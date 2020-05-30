@@ -1,6 +1,6 @@
-import BuilderInterface from "./builder_interface.ts";
-import BuilderOptionInterface from "./builder_option_interface.ts";
-import postgres from './driver/postgres.ts'
+import BuilderInterface from "./../interfaces/builder_interface.ts";
+import BuilderOptionInterface from "./../interfaces/builder_option_interface.ts";
+import postgres from './../driver/postgres.ts'
 
 class PostgresBuilder implements BuilderInterface {
   tableName: string;
@@ -16,11 +16,11 @@ class PostgresBuilder implements BuilderInterface {
     this.columns.push("id SERIAL PRIMARY KEY");
   }
 
-  string(columnName: string, option?: BuilderOptionInterface): void {
+  string(columnName: string, option?: BuilderOptionInterface): BuilderInterface {
     let length = 100    
     if(!option){
       this.columns.push(`${columnName} VARCHAR (${length}) NOT NULL`)
-      return
+      return this
     }
 
     if(option.length){
@@ -32,12 +32,13 @@ class PostgresBuilder implements BuilderInterface {
     } else {
       this.columns.push(`${columnName} VARCHAR(${length}) NOT NULL`)
     }
+    return this
   }
 
-  integer(columnName: string, option?: BuilderOptionInterface): void {
+  integer(columnName: string, option?: BuilderOptionInterface): BuilderInterface {
     if(!option){
       this.columns.push(`${columnName} integer`)
-      return
+      return this
     }
 
     if(option.nullable){
@@ -45,6 +46,12 @@ class PostgresBuilder implements BuilderInterface {
     } else {
       this.columns.push(`${columnName} integer NOT NULL`)
     }
+    return this
+  }
+
+  nullable(): BuilderInterface {
+    this.columns[this.columns.length - 1] += 'lalala'
+    return this
   }
 
   text(columnName: string, option?: BuilderOptionInterface): void {
@@ -81,6 +88,7 @@ class PostgresBuilder implements BuilderInterface {
   async build(): Promise<void> {
     let joinnedColumns = this.columns.join(", ");
     this.query = this.query.replace("COLUMNS_PLACEHOLDER", joinnedColumns);
+    console.log(this.query)
     await postgres.query(this.query);
   }
 

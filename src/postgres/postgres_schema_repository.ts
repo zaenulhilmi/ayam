@@ -1,7 +1,7 @@
-import SchemaInterface from "./schema_interface.ts";
-import BuilderInterface from "./builder_interface.ts";
+import SchemaInterface from "./../interfaces/schema_interface.ts";
+import BuilderInterface from "./../interfaces/builder_interface.ts";
 import PostgresBuilder from "./postgres_builder.ts";
-import postgres from "./driver/postgres.ts";
+import postgres from "./../driver/postgres.ts";
 class PostgresSchemaRepository implements SchemaInterface {
   async hasTable(tableName: string): Promise<boolean> {
     let res = await postgres.query(
