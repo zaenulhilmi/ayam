@@ -57,10 +57,19 @@ async function myCLI(): Promise<void> {
 
   if (program.pg) {
     let schema = new PostgresSchemaRepository();
-    await schema.drop('users');
+    if(await schema.hasTable('users')){
+      await schema.drop('users');
+    }
     await schema.create('users', async (table: BuilderInterface) => {
       table.id()
-      table.string("name").nullable()
+      table.string("name_nullable").nullable()
+      table.string("name_not_nullable")
+      table.integer("integer_nullable").nullable().unsigned()
+      table.integer("integer_not_nullable").default(String(45))
+      table.text("text_nullable").nullable()
+      table.text("text_not_nullable").default("hello world")
+      table.timestamp("timestamp_nullable").nullable()
+      table.timestamp("timestamp_not_nullable")
     })
   }
 }

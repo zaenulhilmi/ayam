@@ -1,99 +1,92 @@
 import BuilderInterface from "./../interfaces/builder_interface.ts";
-import BuilderOptionInterface from "./../interfaces/builder_option_interface.ts";
+import PostgresColumn from './postgres_column.ts'
+import ColumnInterface from './../interfaces/column_interface.ts'
 import postgres from './../driver/postgres.ts'
 
 class PostgresBuilder implements BuilderInterface {
   tableName: string;
   query: string;
-  columns: Array<string> = [];
+  columns: Array<ColumnInterface> = [];
 
   constructor(tableName: string) {
     this.tableName = tableName;
-    this.query = `CREATE TABLE ${this.tableName} ( COLUMNS_PLACEHOLDER );`;
+    this.query = `create table ${this.tableName} (COLUMNS_PLACEHOLDER);`;
   }
 
   id(): void {
-    this.columns.push("id SERIAL PRIMARY KEY");
+    let column: ColumnInterface = new PostgresColumn('id', 'bigserial') 
+    column.setPrimary("primary key")
+    this.columns.push(column);
   }
 
-  string(columnName: string, option?: BuilderOptionInterface): BuilderInterface {
-    let length = 100    
-    if(!option){
-      this.columns.push(`${columnName} VARCHAR (${length}) NOT NULL`)
-      return this
-    }
-
-    if(option.length){
-      length = option.length
-    }
-
-    if(option.nullable){
-      this.columns.push(`${columnName} VARCHAR(${length}) NULL`)
-    } else {
-      this.columns.push(`${columnName} VARCHAR(${length}) NOT NULL`)
-    }
+  string(columnName: string): BuilderInterface {
+    let column: ColumnInterface = new PostgresColumn(columnName, 'varchar(255)')
+    this.columns.push(column)
     return this
   }
 
-  integer(columnName: string, option?: BuilderOptionInterface): BuilderInterface {
-    if(!option){
-      this.columns.push(`${columnName} integer`)
-      return this
-    }
-
-    if(option.nullable){
-      this.columns.push(`${columnName} integer NULL`)
-    } else {
-      this.columns.push(`${columnName} integer NOT NULL`)
-    }
+  integer(columnName: string): BuilderInterface {
+    let column: ColumnInterface = new PostgresColumn(columnName, 'integer')
+    this.columns.push(column)
     return this
   }
 
-  nullable(): BuilderInterface {
-    this.columns[this.columns.length - 1] += 'lalala'
+  text(columnName: string): BuilderInterface {
+    let column: ColumnInterface = new PostgresColumn(columnName, 'text')
+    this.columns.push(column)
     return this
   }
 
-  text(columnName: string, option?: BuilderOptionInterface): void {
-    if(!option) {
-      this.columns.push(`${columnName} TEXT NOT NULL`);
-      return
-    }
-
-    if(option.nullable){
-      this.columns.push(`${columnName} TEXT NULL`);
-    } else {
-      this.columns.push(`${columnName} TEXT NOT NULL`);
-    }
-  }
-
-  timestamp(columnName: string, option?: BuilderOptionInterface): void {
-    if (!option) {
-      this.columns.push(`${columnName} TIMESTAMP NOT NULL`);
-      return;
-    }
-
-    if (option.nullable) {
-      this.columns.push(`${columnName} TIMESTAMP DEFAULT NULL`);
-    } else {
-      this.columns.push(`${columnName} TIMESTAMP NOT NULL`);
-    }
+  timestamp(columnName: string): BuilderInterface {
+    let column: ColumnInterface = new PostgresColumn(columnName, 'timestamp')
+    this.columns.push(column)
+    return this
   }
 
   timestamps(): void {
-    this.columns.push(`created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP`);
-    this.columns.push(`updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP`);
+    let createdAt: ColumnInterface = new PostgresColumn('created_at', 'timestamp')
+    let updatedAt: ColumnInterface = new PostgresColumn('created_at', 'timestamp')
+    this.columns.push(createdAt)
+    this.columns.push(updatedAt)
+  }
+
+  nullable(): BuilderInterface {
+    this.columns[this.columns.length - 1].setNullable(true)
+    return this
+  }
+
+  unsigned(): BuilderInterface {
+    this.columns[this.columns.length - 1].setUnsigned(true)
+    return this
+  }
+
+  default(value: string): BuilderInterface {
+    this.columns[this.columns.length - 1].setDefault(value)
+    return this
   }
 
   async build(): Promise<void> {
-    let joinnedColumns = this.columns.join(", ");
+    let joinnedColumns = this._joinColumns()
     this.query = this.query.replace("COLUMNS_PLACEHOLDER", joinnedColumns);
-    console.log(this.query)
     await postgres.query(this.query);
   }
 
   toSql(): string {
-    return ""
+    let joinnedColumns = this._joinColumns()
+    this.query = this.query.replace("COLUMNS_PLACEHOLDER", joinnedColumns);
+    return this.query
+  }
+
+  _joinColumns(): string {
+    let result: string = '';
+    for(let i = 0; i < this.columns.length; i++){
+      let column = this.columns[i]
+      result += column.toString()
+      if(i != this.columns.length - 1){
+        result += ', '
+      }
+    }
+    return result
   }
 }
 
