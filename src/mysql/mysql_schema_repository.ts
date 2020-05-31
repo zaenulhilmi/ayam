@@ -57,7 +57,7 @@ class MySqlSchemaRepository implements SchemaInterface {
     tableName: string,
     callback: (builder: BuilderInterface) => void,
   ): Promise<void> {
-    let mysqlBuilder: BuilderInterface = new MySqlBuilder(tableName, 'create');
+    let mysqlBuilder: BuilderInterface = new MySqlBuilder(tableName);
     callback(mysqlBuilder);
     mysqlBuilder.build();
   }

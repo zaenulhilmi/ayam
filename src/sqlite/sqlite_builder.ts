@@ -1,5 +1,5 @@
 import BuilderInterface from "./../interfaces/builder_interface.ts";
-import PostgresColumn from './postgres_column.ts'
+import SqliteColumn from './sqlite_column.ts'
 import ColumnInterface from './../interfaces/column_interface.ts'
 import postgres from './../driver/postgres.ts'
 
@@ -14,40 +14,40 @@ class PostgresBuilder implements BuilderInterface {
   }
 
   id(): void {
-    let column: ColumnInterface = new PostgresColumn('id', 'bigserial') 
-    column.setPrimary("primary key")
+    let column: ColumnInterface = new SqliteColumn('id', 'integer') 
+    column.setPrimary("primary key autoincrement")
     this.columns.push(column);
   }
 
   string(columnName: string): BuilderInterface {
-    let column: ColumnInterface = new PostgresColumn(columnName, 'varchar(255)')
+    let column: ColumnInterface = new SqliteColumn(columnName, 'varchar(255)')
     this.columns.push(column)
     return this
   }
 
   integer(columnName: string): BuilderInterface {
-    let column: ColumnInterface = new PostgresColumn(columnName, 'integer')
-    this.columns.push(column)
+    // let column: ColumnInterface = new PostgresColumn(columnName, 'integer')
+    // this.columns.push(column)
     return this
   }
 
   text(columnName: string): BuilderInterface {
-    let column: ColumnInterface = new PostgresColumn(columnName, 'text')
+    let column: ColumnInterface = new SqliteColumn(columnName, 'text')
     this.columns.push(column)
     return this
   }
 
   timestamp(columnName: string): BuilderInterface {
-    let column: ColumnInterface = new PostgresColumn(columnName, 'timestamp')
+    let column: ColumnInterface = new SqliteColumn(columnName, 'text')
     this.columns.push(column)
     return this
   }
 
   timestamps(): void {
-    let createdAt: ColumnInterface = new PostgresColumn('created_at', 'timestamp')
-    let updatedAt: ColumnInterface = new PostgresColumn('updated_at', 'timestamp')
-    this.columns.push(createdAt)
-    this.columns.push(updatedAt)
+    // let createdAt: ColumnInterface = new PostgresColumn('created_at', 'timestamp')
+    // let updatedAt: ColumnInterface = new PostgresColumn('updated_at', 'timestamp')
+    // this.columns.push(createdAt)
+    // this.columns.push(updatedAt)
   }
 
   nullable(): BuilderInterface {

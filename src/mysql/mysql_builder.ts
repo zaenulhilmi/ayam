@@ -1,106 +1,71 @@
 import BuilderInterface from "./../interfaces/builder_interface.ts";
 import mysql from "./../driver/mysql.ts";
+import MysqlColumn from './mysql_column.ts'
+import ColumnInterface from './../interfaces/column_interface.ts'
 
-// class MySqlBuilder implements BuilderInterface {
-class MySqlBuilder {
+class MySqlBuilder implements BuilderInterface {
   tableName: string;
   query: string;
-  columns: Array<string> = [];
+  columns: Array<ColumnInterface> = [];
 
-  constructor(tableName: string, action: string) {
+  constructor(tableName: string) {
     this.tableName = tableName;
-    if(action == 'create'){
-      this.query = `CREATE TABLE ${this.tableName} ( COLUMNS_PLACEHOLDER );`;
-    } else {
-      this.query = `ALTER TABLE ${this.tableName} ( COLUMNS_PLACEHOLDER );`;
-    }
+    this.query = `create table ${this.tableName} (COLUMNS_PLACEHOLDER);`;
   }
 
   id(): void {
-    this.columns.push("id INT NOT NULL PRIMARY KEY AUTO_INCREMENT");
+
+    let column: ColumnInterface = new MysqlColumn('id', 'bigint') 
+    column.setPrimary("primary key")
+    this.columns.push(column);
   }
 
   string(columnName: string): BuilderInterface {
-    // let length = 100;
-    // if (!option) {
-    //   this.columns.push(`${columnName} VARCHAR(${length}) NOT NULL`);
-    //   return this;
-    // }
-
-    // if (option.length) {
-    //   length = option.length;
-    // }
-
-    // if (option.nullable) {
-    //   this.columns.push(`${columnName} VARCHAR(${length}) DEFAULT NULL`);
-    // } else {
-    //   this.columns.push(`${columnName} VARCHAR(${length}) NOT NULL`);
-    // }
+    let column: ColumnInterface = new MysqlColumn(columnName, 'varchar(255)')
+    this.columns.push(column)
     return this
   }
 
   integer(columnName: string): BuilderInterface {
-    // let length = 11;
-    // if (!option) {
-    //   this.columns.push(`${columnName} INT(${length}) NOT NULL`);
-    //   return this;
-    // }
-
-    // if (option.length) {
-    //   length = option.length;
-    // }
-
-    // if (option.nullable) {
-    //   this.columns.push(`${columnName} INT(${length}) DEFAULT NULL`);
-    // } else {
-    //   this.columns.push(`${columnName} INT(${length}) NOT NULL`);
-    // }
-    return this;
+    let column: ColumnInterface = new MysqlColumn(columnName, 'int')
+    this.columns.push(column)
+    return this
   }
 
   text(columnName: string): BuilderInterface {
-    // if (!option) {
-    //   this.columns.push(`${columnName} TEXT NOT NULL`);
-    //   return;
-    // }
-
-    // if (option.nullable) {
-    //   this.columns.push(`${columnName} TEXT DEFAULT NULL`);
-    // } else {
-    //   this.columns.push(`${columnName} TEXT NOT NULL`);
-    // }
+    let column: ColumnInterface = new MysqlColumn(columnName, 'text')
+    this.columns.push(column)
     return this
   }
 
   timestamp(columnName: string): BuilderInterface {
-    // if (!option) {
-    //   this.columns.push(`${columnName} TIMESTAMP NOT NULL`);
-    //   return;
-    // }
-
-    // if (option.nullable) {
-    //   this.columns.push(`${columnName} TIMESTAMP DEFAULT NULL`);
-    // } else {
-    //   this.columns.push(`${columnName} TIMESTAMP NOT NULL`);
-    // }
+    let column: ColumnInterface = new MysqlColumn(columnName, 'timestamp')
+    this.columns.push(column)
     return this
   }
 
   timestamps(): void {
-    this.columns.push(`created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP`);
-    this.columns.push(`updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP`);
+    let createdAt : ColumnInterface = new MysqlColumn('created_at', 'timestamp')
+    let updatedAt: ColumnInterface = new MysqlColumn('updated_at', 'timestamp')
+    this.columns.push(createdAt)
+    this.columns.push(updatedAt)
   }
 
   nullable(): BuilderInterface {
-    return this
-  }
-  unsigned(): BuilderInterface {
+    this.columns[this.columns.length - 1].setNullable(true)
     return this
   }
 
-  default(): BuilderInterface {
+  unsigned(): BuilderInterface {
+    this.columns[this.columns.length - 1].setUnsigned(true)
     return this
   }
+
+  default(value: string): BuilderInterface {
+    this.columns[this.columns.length - 1].setDefault(value)
+    return this
+  }
+
   async build(): Promise<void> {
     let joinnedColumns = this.columns.join(", ");
     this.query = this.query.replace("COLUMNS_PLACEHOLDER", joinnedColumns);
