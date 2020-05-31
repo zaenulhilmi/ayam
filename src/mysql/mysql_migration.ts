@@ -1,9 +1,10 @@
 import MigrationInterface from "./../interfaces/migration_interface.ts";
 import mysql from "./../driver/mysql.ts";
-import MySqlSchemaRepository from "./mysql_schema.ts";
+import MySqlSchema from "./mysql_schema.ts";
 import SchemaInterface from "./../interfaces/schema_interface.ts";
 import BuilderInterface from "./../interfaces/builder_interface.ts";
 import Configuration from "./../configuration.ts";
+import MysqlRepository from "./mysql_repository.ts";
 
 interface MigrationData {
   id?: number;
@@ -29,7 +30,7 @@ class MysqlMigration implements MigrationInterface {
   }
 
   async _createMigrationTableIfNotExist(): Promise<void> {
-    let schema: SchemaInterface = new MySqlSchemaRepository();
+    let schema: SchemaInterface = new MySqlSchema(new MysqlRepository());
     let dirExist = await schema.hasTable("migrations");
     if (dirExist) {
       return;
@@ -99,7 +100,7 @@ class MysqlMigration implements MigrationInterface {
     for await (let x of this.data) {
       let Class =
         (await import(`${projectDir}/${migrationDir}/${x.file_name}`)).default;
-      let mysqlSchemaRepository = new MySqlSchemaRepository();
+      let mysqlSchemaRepository = new MySqlSchema(new MysqlRepository());
       let object = new Class();
       await mysql.execute(
         `INSERT INTO migrations SET file_name=?, step=?`,
@@ -132,7 +133,7 @@ class MysqlMigration implements MigrationInterface {
     for await (let x of lastStepMigrations) {
       let Class =
         (await import(`${projectDir}/${migrationDir}/${x.file_name}`)).default;
-      let mysqlSchemaRepository = new MySqlSchemaRepository();
+      let mysqlSchemaRepository = new MySqlSchema(new MysqlRepository);
       let object = new Class();
       await mysql.execute(`DELETE FROM migrations WHERE id=?`, [x.id]);
       await object.down(mysqlSchemaRepository);
