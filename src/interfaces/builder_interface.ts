@@ -1,4 +1,3 @@
-
 interface BuilderInterface {
   //column types
   id(): void;

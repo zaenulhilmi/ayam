@@ -1,18 +1,17 @@
 import SchemaInterface from "./../interfaces/schema_interface.ts";
 import BuilderInterface from "./../interfaces/builder_interface.ts";
 import PostgresBuilder from "./postgres_builder.ts";
-import RepositoryInterface from "./../interfaces/repository_interface.ts"
+import RepositoryInterface from "./../interfaces/repository_interface.ts";
 import postgres from "./../driver/postgres.ts";
 class PostgresSchemaRepository implements SchemaInterface {
+  repo: RepositoryInterface;
 
-  repo: RepositoryInterface
-
-  constructor(repo: RepositoryInterface){
-    this.repo = repo
+  constructor(repo: RepositoryInterface) {
+    this.repo = repo;
   }
 
   async hasTable(tableName: string): Promise<boolean> {
-    let res = await this.repo.findTable(tableName).get()
+    let res = await this.repo.findTable(tableName).get();
     if (res.rows.length == 0) {
       return false;
     }
@@ -20,7 +19,7 @@ class PostgresSchemaRepository implements SchemaInterface {
   }
 
   async hasColumn(tableName: string, columnName: string): Promise<boolean> {
-    let res = await this.repo.findTableColumn(tableName, columnName).get()
+    let res = await this.repo.findTableColumn(tableName, columnName).get();
     if (res.rows.length == 0) {
       return false;
     }
@@ -54,13 +53,13 @@ class PostgresSchemaRepository implements SchemaInterface {
   }
 
   async drop(tableName: string): Promise<void> {
-    this.repo.dropTable(tableName)
-    await this.repo.execute()
+    this.repo.dropTable(tableName);
+    await this.repo.execute();
   }
 
   async rename(oldTableName: string, newTableName: string): Promise<void> {
-    this.repo.renameTable(oldTableName, newTableName)
-    await this.repo.execute()
+    this.repo.renameTable(oldTableName, newTableName);
+    await this.repo.execute();
   }
 }
 
