@@ -1,10 +1,10 @@
-import RepositoryInterface from "./../interfaces/repository_interface.ts";
+import SchemaRepositoryInterface from "./../interfaces/schema_repository_interface.ts";
 import postgres from "./../driver/postgres.ts";
 
-class PostgresRepository implements RepositoryInterface {
+class PostgresSchemaRepository implements SchemaRepositoryInterface {
   query: string = "";
 
-  insert(tableName: string, object: any): RepositoryInterface {
+  insert(tableName: string, object: any): SchemaRepositoryInterface {
         let query = `insert into ${tableName} set `
         let res:Array<string> = []
         for(let key in object){
@@ -14,24 +14,24 @@ class PostgresRepository implements RepositoryInterface {
         this.query = query
         return this
   }
-  findTable(tableName: string): RepositoryInterface {
+  findTable(tableName: string): SchemaRepositoryInterface {
     this.query =
       `select * from information_schema.tables where table_schema='public' and table_name='${tableName}';`;
     return this;
   }
 
-  findTableColumn(tableName: string, columnName: string): RepositoryInterface {
+  findTableColumn(tableName: string, columnName: string): SchemaRepositoryInterface {
     this.query =
       `select * from information_schema.columns where table_schema='public' and table_name='${tableName}' and column_name='${columnName}';`;
     return this;
   }
 
-  dropTable(tableName: string): RepositoryInterface {
+  dropTable(tableName: string): SchemaRepositoryInterface {
     this.query = `drop table ${tableName};`;
     return this;
   }
 
-  renameTable(oldTableName: string, newTableName: string): RepositoryInterface {
+  renameTable(oldTableName: string, newTableName: string): SchemaRepositoryInterface {
     this.query = `alter table ${oldTableName} rename to ${newTableName};`;
     return this;
   }
@@ -50,4 +50,4 @@ class PostgresRepository implements RepositoryInterface {
   }
 }
 
-export default PostgresRepository;
+export default PostgresSchemaRepository;

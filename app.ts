@@ -6,7 +6,8 @@ import BuilderInterface from "./src/interfaces/builder_interface.ts";
 import Migrate from "./src/migrate.ts";
 import MigrationInterface from "./src/interfaces/migration_interface.ts";
 import CommandInterface from "./src/interfaces/command_interface.ts";
-import PostgresSchemaRepository from "./src/postgres/postgres_schema_repository.ts";
+import PostgresSchema from "./src/postgres/postgres_schema.ts";
+import MigrationFactory from "./src/migration_factory.ts";
 async function myCLI(): Promise<void> {
   const program = new Denomander(
     {
@@ -42,10 +43,11 @@ async function myCLI(): Promise<void> {
   }
 
   if (program.migrate) {
-    let migration: MigrationInterface = new MysqlMigration();
+    let config = await Configuration.newInstance();
+    let dialect  = await config.get('dialect')
+    let migration: MigrationInterface = (new MigrationFactory(dialect)).get()
     let migrate: CommandInterface = new Migrate(migration);
     await migrate.execute();
-    console.log("migrated");
   }
 
   if (program.rollback) {
@@ -56,21 +58,21 @@ async function myCLI(): Promise<void> {
   }
 
   if (program.pg) {
-    let schema = new PostgresSchemaRepository();
-    if (await schema.hasTable("users")) {
-      await schema.drop("users");
-    }
-    await schema.create("users", async (table: BuilderInterface) => {
-      table.id();
-      table.string("name_nullable").nullable();
-      table.string("name_not_nullable");
-      table.integer("integer_nullable").nullable().unsigned();
-      table.integer("integer_not_nullable").default(String(45));
-      table.text("text_nullable").nullable();
-      table.text("text_not_nullable").default("hello world");
-      table.timestamp("timestamp_nullable").nullable();
-      table.timestamp("timestamp_not_nullable");
-    });
+    // let schema = new PostgresSchema();
+    // if (await schema.hasTable("users")) {
+    //   await schema.drop("users");
+    // }
+    // await schema.create("users", async (table: BuilderInterface) => {
+    //   table.id();
+    //   table.string("name_nullable").nullable();
+    //   table.string("name_not_nullable");
+    //   table.integer("integer_nullable").nullable().unsigned();
+    //   table.integer("integer_not_nullable").default(String(45));
+    //   table.text("text_nullable").nullable();
+    //   table.text("text_not_nullable").default("hello world");
+    //   table.timestamp("timestamp_nullable").nullable();
+    //   table.timestamp("timestamp_not_nullable");
+    // });
   }
 }
 

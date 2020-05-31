@@ -1,13 +1,13 @@
 import SchemaInterface from "./../interfaces/schema_interface.ts";
 import BuilderInterface from "./../interfaces/builder_interface.ts";
 import MySqlBuilder from "./mysql_builder.ts";
-import RepositoryInterface from './../interfaces/repository_interface.ts'
+import SchemaRepositoryInterface from './../interfaces/schema_repository_interface.ts'
 
 class MySqlSchemaRepository implements SchemaInterface {
 
-  repo: RepositoryInterface
+  repo: SchemaRepositoryInterface
 
-  constructor(repo: RepositoryInterface){
+  constructor(repo: SchemaRepositoryInterface){
     this.repo = repo
   }
 

@@ -1,9 +1,9 @@
-import PostgresRepository from "../src/postgres/postgres_repository.ts";
-import RepositoryInterface from "../src/interfaces/repository_interface.ts";
+import PostgresSchemaRepository from "../src/postgres/postgres_schema_repository.ts";
+import SchemaRepositoryInterface from "../src/interfaces/schema_repository_interface.ts";
 import { assertEquals } from "https://deno.land/std/testing/asserts.ts";
 
 Deno.test("postgres insert into table", async () => {
-  let repo: RepositoryInterface = new PostgresRepository();
+  let repo: SchemaRepositoryInterface = new PostgresSchemaRepository();
   repo.insert("users", {first_name: 'John', last_name: 'Doe'});
   assertEquals(
     repo.toSql(),
@@ -12,7 +12,7 @@ Deno.test("postgres insert into table", async () => {
 });
 
 Deno.test("postgres find table", async () => {
-  let repo: RepositoryInterface = new PostgresRepository();
+  let repo: SchemaRepositoryInterface = new PostgresSchemaRepository();
   repo.findTable("users");
   assertEquals(
     repo.toSql(),
@@ -21,7 +21,7 @@ Deno.test("postgres find table", async () => {
 });
 
 Deno.test("postgres find table column", async () => {
-  let repo: RepositoryInterface = new PostgresRepository();
+  let repo: SchemaRepositoryInterface = new PostgresSchemaRepository();
   repo.findTableColumn("users", "name");
   assertEquals(
     repo.toSql(),
@@ -30,13 +30,13 @@ Deno.test("postgres find table column", async () => {
 });
 
 Deno.test("postgres drop table", async () => {
-  let repo: RepositoryInterface = new PostgresRepository();
+  let repo: SchemaRepositoryInterface = new PostgresSchemaRepository();
   repo.dropTable("users");
   assertEquals(repo.toSql(), `drop table users;`);
 });
 
 Deno.test("postgres rename table", async () => {
-  let repo: RepositoryInterface = new PostgresRepository();
+  let repo: SchemaRepositoryInterface = new PostgresSchemaRepository();
   repo.renameTable("customers", "users");
   assertEquals(repo.toSql(), `alter table customers rename to users;`);
 });

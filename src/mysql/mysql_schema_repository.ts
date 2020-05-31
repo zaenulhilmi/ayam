@@ -1,10 +1,10 @@
-import RepositoryInterface from "../interfaces/repository_interface.ts";
+import SchemaRepositoryInterface from "../interfaces/schema_repository_interface.ts";
 import mysql from "./../driver/mysql.ts";
 
-class MysqlRepository implements RepositoryInterface {
+class MysqlSchemaRepository implements SchemaRepositoryInterface {
     query: string = "";
 
-    insert(tableName: string, object: any): RepositoryInterface {
+    insert(tableName: string, object: any): SchemaRepositoryInterface {
         let query = `insert into ${tableName} set `
         let res:Array<string> = []
         for(let key in object){
@@ -15,22 +15,22 @@ class MysqlRepository implements RepositoryInterface {
         return this
     }
 
-    findTable(tableName: string): RepositoryInterface {
+    findTable(tableName: string): SchemaRepositoryInterface {
         this.query = `select * from information_schema.tables where table_schema = database() and table_name = '${tableName}';`
         return this;
     }
   
-    findTableColumn(tableName: string, columnName: string): RepositoryInterface {
+    findTableColumn(tableName: string, columnName: string): SchemaRepositoryInterface {
         this.query = `select * from information_schema.columns where table_schema = database() and table_name = '${tableName}' and column_name = '${columnName}';`
         return this;
     }
   
-    dropTable(tableName: string): RepositoryInterface {
+    dropTable(tableName: string): SchemaRepositoryInterface {
         this.query = `drop table ${tableName};`
         return this;
     }
   
-    renameTable(oldTableName: string, newTableName: string): RepositoryInterface {
+    renameTable(oldTableName: string, newTableName: string): SchemaRepositoryInterface {
         this.query = `rename table ${oldTableName} to ${newTableName};`
         return this;
     }
@@ -50,4 +50,4 @@ class MysqlRepository implements RepositoryInterface {
   
 }
 
-export default MysqlRepository
+export default MysqlSchemaRepository
