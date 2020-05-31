@@ -2,6 +2,15 @@ import PostgresRepository from "../src/postgres/postgres_repository.ts";
 import RepositoryInterface from "../src/interfaces/repository_interface.ts";
 import { assertEquals } from "https://deno.land/std/testing/asserts.ts";
 
+Deno.test("postgres insert into table", async () => {
+  let repo: RepositoryInterface = new PostgresRepository();
+  repo.insert("users", {first_name: 'John', last_name: 'Doe'});
+  assertEquals(
+    repo.toSql(),
+    `insert into users set first_name='John', last_name='Doe'`
+  );
+});
+
 Deno.test("postgres find table", async () => {
   let repo: RepositoryInterface = new PostgresRepository();
   repo.findTable("users");

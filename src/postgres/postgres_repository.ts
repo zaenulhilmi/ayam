@@ -4,6 +4,16 @@ import postgres from "./../driver/postgres.ts";
 class PostgresRepository implements RepositoryInterface {
   query: string = "";
 
+  insert(tableName: string, object: any): RepositoryInterface {
+        let query = `insert into ${tableName} set `
+        let res:Array<string> = []
+        for(let key in object){
+            res.push(`${key}='${object[key]}'`)
+        }
+        query += `${res.join(', ')}`
+        this.query = query
+        return this
+  }
   findTable(tableName: string): RepositoryInterface {
     this.query =
       `select * from information_schema.tables where table_schema='public' and table_name='${tableName}';`;
