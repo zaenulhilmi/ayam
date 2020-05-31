@@ -45,7 +45,7 @@ class PostgresBuilder implements BuilderInterface {
 
   timestamps(): void {
     let createdAt: ColumnInterface = new PostgresColumn('created_at', 'timestamp')
-    let updatedAt: ColumnInterface = new PostgresColumn('created_at', 'timestamp')
+    let updatedAt: ColumnInterface = new PostgresColumn('updated_at', 'timestamp')
     this.columns.push(createdAt)
     this.columns.push(updatedAt)
   }
@@ -74,6 +74,7 @@ class PostgresBuilder implements BuilderInterface {
   toSql(): string {
     let joinnedColumns = this._joinColumns()
     this.query = this.query.replace("COLUMNS_PLACEHOLDER", joinnedColumns);
+    console.log(this.query)
     return this.query
   }
 
