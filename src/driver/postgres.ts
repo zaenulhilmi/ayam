@@ -22,7 +22,6 @@ class Postgres {
         user: DATABASE_USER,
         database: DATABASE_NAME,
         password: DATABASE_PASSWORD,
-        applicationName: "my_custom_app",
       };
       client = await new Client(config);
       await client.connect();

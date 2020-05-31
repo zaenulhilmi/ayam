@@ -1,18 +1,18 @@
 import SchemaInterface from "./../interfaces/schema_interface.ts";
 import BuilderInterface from "./../interfaces/builder_interface.ts";
 import PostgresBuilder from "./postgres_builder.ts";
+import RepositoryInterface from "./../interfaces/repository_interface.ts"
 import postgres from "./../driver/postgres.ts";
 class PostgresSchemaRepository implements SchemaInterface {
-  async hasTable(tableName: string): Promise<boolean> {
-    let res = await postgres.query(
-      `SELECT 1 
-        FROM   INFORMATION_SCHEMA.TABLES
-        WHERE  table_schema = 'public'
-        AND table_name = $1;
-        `,
-      tableName,
-    );
 
+  repo: RepositoryInterface
+
+  constructor(repo: RepositoryInterface){
+    this.repo = repo
+  }
+
+  async hasTable(tableName: string): Promise<boolean> {
+    let res = await this.repo.findTable(tableName).get()
     if (res.rows.length == 0) {
       return false;
     }
@@ -20,14 +20,7 @@ class PostgresSchemaRepository implements SchemaInterface {
   }
 
   async hasColumn(tableName: string, columnName: string): Promise<boolean> {
-    let res = await postgres.query(
-      `SELECT column_name FROM INFORMATION_SCHEMA.COLUMNS WHERE 
-        TABLE_SCHEMA= 'public' AND 
-        TABLE_NAME = $1 AND
-        COLUMN_NAME = $2;`,
-      tableName,
-      columnName,
-    );
+    let res = await this.repo.findTableColumn(tableName, columnName).get()
     if (res.rows.length == 0) {
       return false;
     }
@@ -59,14 +52,15 @@ class PostgresSchemaRepository implements SchemaInterface {
     callback(postgresBuilder);
     postgresBuilder.build();
   }
+
   async drop(tableName: string): Promise<void> {
-    await postgres.query(`DROP TABLE ${tableName};`);
+    this.repo.dropTable(tableName)
+    await this.repo.execute()
   }
 
   async rename(oldTableName: string, newTableName: string): Promise<void> {
-    await postgres.query(
-      `ALTER TABLE ${oldTableName} RENAME TO ${newTableName};`,
-    );
+    this.repo.renameTable(oldTableName, newTableName)
+    await this.repo.execute()
   }
 }
 
