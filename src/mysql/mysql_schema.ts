@@ -1,19 +1,18 @@
 import SchemaInterface from "./../interfaces/schema_interface.ts";
 import BuilderInterface from "./../interfaces/builder_interface.ts";
 import MySqlBuilder from "./mysql_builder.ts";
-import SchemaRepositoryInterface from './../interfaces/schema_repository_interface.ts'
+import SchemaRepositoryInterface from "./../interfaces/schema_repository_interface.ts";
 
 class MySqlSchemaRepository implements SchemaInterface {
+  repo: SchemaRepositoryInterface;
 
-  repo: SchemaRepositoryInterface
-
-  constructor(repo: SchemaRepositoryInterface){
-    this.repo = repo
+  constructor(repo: SchemaRepositoryInterface) {
+    this.repo = repo;
   }
 
   async hasTable(tableName: string): Promise<boolean> {
     try {
-      let result = await this.repo.findTable(tableName).get()
+      let result = await this.repo.findTable(tableName).get();
       if (result.length > 0) {
         return true;
       }
@@ -26,7 +25,7 @@ class MySqlSchemaRepository implements SchemaInterface {
 
   async hasColumn(tableName: string, columnName: string): Promise<boolean> {
     try {
-      let result = await this.repo.findTableColumn(tableName, columnName).get()
+      let result = await this.repo.findTableColumn(tableName, columnName).get();
       if (result.length > 0) {
         return true;
       }
@@ -39,7 +38,7 @@ class MySqlSchemaRepository implements SchemaInterface {
 
   async getColumnType(tableName: string, columnName: string): Promise<string> {
     try {
-      let result = await this.repo.findTableColumn(tableName, columnName).get()
+      let result = await this.repo.findTableColumn(tableName, columnName).get();
       if (result.length == 0) {
         throw new Error("Column not found");
       }
@@ -61,7 +60,7 @@ class MySqlSchemaRepository implements SchemaInterface {
 
   async drop(tableName: string): Promise<void> {
     try {
-      await this.repo.dropTable(tableName).execute()
+      await this.repo.dropTable(tableName).execute();
     } catch (e) {
       console.error(e);
     }
@@ -69,7 +68,7 @@ class MySqlSchemaRepository implements SchemaInterface {
 
   async rename(oldTableName: string, newTableName: string): Promise<void> {
     try {
-      await this.repo.renameTable(oldTableName, newTableName).execute()
+      await this.repo.renameTable(oldTableName, newTableName).execute();
     } catch (e) {
       console.error(e);
     }

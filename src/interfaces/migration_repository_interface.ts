@@ -1,13 +1,13 @@
 interface MigrationRepositoryInterface {
-    query: string
-    create(): MigrationRepositoryInterface
-    insert(fileName: string, step: number): MigrationRepositoryInterface
-    lastMigration(): MigrationRepositoryInterface
-    removeAllLastStep(): MigrationRepositoryInterface
+  query: string;
+  create(): MigrationRepositoryInterface;
+  insert(fileName: string, step: number): MigrationRepositoryInterface;
+  lastMigration(): MigrationRepositoryInterface;
+  removeAllLastStep(): MigrationRepositoryInterface;
 
-    execute(): Promise<void>
-    get(): Promise<any>
-    toSql(): string
+  execute(): Promise<void>;
+  get(): Promise<any>;
+  toSql(): string;
 }
 
-export default MigrationRepositoryInterface
+export default MigrationRepositoryInterface;

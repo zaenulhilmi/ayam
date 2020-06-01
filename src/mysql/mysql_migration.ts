@@ -133,7 +133,7 @@ class MysqlMigration implements MigrationInterface {
     for await (let x of lastStepMigrations) {
       let Class =
         (await import(`${projectDir}/${migrationDir}/${x.file_name}`)).default;
-      let mysqlSchemaRepository = new MySqlSchema(new MysqlSchemaRepository);
+      let mysqlSchemaRepository = new MySqlSchema(new MysqlSchemaRepository());
       let object = new Class();
       await mysql.execute(`DELETE FROM migrations WHERE id=?`, [x.id]);
       await object.down(mysqlSchemaRepository);

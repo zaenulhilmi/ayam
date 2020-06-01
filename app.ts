@@ -44,8 +44,8 @@ async function myCLI(): Promise<void> {
 
   if (program.migrate) {
     let config = await Configuration.newInstance();
-    let dialect  = await config.get('dialect')
-    let migration: MigrationInterface = (new MigrationFactory(dialect)).get()
+    let dialect = await config.get("dialect");
+    let migration: MigrationInterface = (new MigrationFactory(dialect)).get();
     let migrate: CommandInterface = new Migrate(migration);
     await migrate.execute();
   }

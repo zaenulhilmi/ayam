@@ -4,10 +4,10 @@ import { assertEquals } from "https://deno.land/std/testing/asserts.ts";
 
 Deno.test("mysql insert into table", async () => {
   let repo: SchemaRepositoryInterface = new MysqlSchemaRepository();
-  repo.insert("users", {first_name: 'John', last_name: 'Doe'});
+  repo.insert("users", { first_name: "John", last_name: "Doe" });
   assertEquals(
     repo.toSql(),
-    `insert into users set first_name='John', last_name='Doe'`
+    `insert into users set first_name='John', last_name='Doe'`,
   );
 });
 

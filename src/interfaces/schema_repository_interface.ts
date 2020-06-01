@@ -1,5 +1,5 @@
 interface RepositoryInterface {
-  insert(tableName:string, object: any): RepositoryInterface
+  insert(tableName: string, object: any): RepositoryInterface;
   findTable(tableName: string): RepositoryInterface;
   findTableColumn(tableName: string, columnName: string): RepositoryInterface;
   dropTable(tableName: string): RepositoryInterface;
