@@ -2,9 +2,10 @@ import MigrationInterface from "./../interfaces/migration_interface.ts";
 import mysql from "./../driver/mysql.ts";
 import MySqlSchema from "./mysql_schema.ts";
 import SchemaInterface from "./../interfaces/schema_interface.ts";
-import BuilderInterface from "./../interfaces/builder_interface.ts";
 import Configuration from "./../configuration.ts";
 import MysqlSchemaRepository from "./mysql_schema_repository.ts";
+import MigrationRepositoryInterface from "../interfaces/migration_repository_interface.ts";
+import MysqlMigrationRepository from "./mysql_migration_repository.ts";
 
 interface MigrationData {
   id?: number;
@@ -16,6 +17,11 @@ interface MigrationData {
 
 class MysqlMigration implements MigrationInterface {
   data: Array<MigrationData> = [];
+  migrationRepo: MigrationRepositoryInterface
+
+  constructor() {
+    this.migrationRepo = new MysqlMigrationRepository()
+  }
 
   async migrate(): Promise<void> {
     await this._createMigrationTableIfNotExist();
@@ -35,21 +41,16 @@ class MysqlMigration implements MigrationInterface {
     if (dirExist) {
       return;
     }
-    schema.create("migrations", async (table: BuilderInterface) => {
-      table.id();
-      table.string("file_name");
-      table.integer("step");
-      table.timestamps();
-    });
+    await this.migrationRepo.create().execute()
   }
 
   async _getLastMigrationData(): Promise<MigrationData> {
-    let lastMigration = await mysql.query(
-      "SELECT * FROM migrations ORDER BY id DESC LIMIT 1",
-    );
+    let lastMigration = await this.migrationRepo.get()
+
     if (lastMigration.length > 0) {
       return lastMigration[0];
     }
+
     return {
       id: 0,
       file_name: "lala",

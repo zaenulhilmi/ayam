@@ -1,5 +1,6 @@
 interface MigrationRepositoryInterface {
   query: string;
+  exist(): MigrationRepositoryInterface;
   create(): MigrationRepositoryInterface;
   insert(fileName: string, step: number): MigrationRepositoryInterface;
   lastMigration(): MigrationRepositoryInterface;
