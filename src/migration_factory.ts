@@ -10,10 +10,10 @@ class MigrationFactory {
 
   get(): MigrationInterface {
     switch (this.dialect) {
-        case "mysql":
-            return new MysqlMigration();
-        case "postgres":
-            return new PostgresMigration()
+      case "mysql":
+        return new MysqlMigration();
+      case "postgres":
+        return new PostgresMigration();
     }
     throw new Error("dialect is not defined");
   }

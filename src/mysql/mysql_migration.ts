@@ -17,10 +17,10 @@ interface MigrationData {
 
 class MysqlMigration implements MigrationInterface {
   data: Array<MigrationData> = [];
-  migrationRepo: MigrationRepositoryInterface
+  migrationRepo: MigrationRepositoryInterface;
 
   constructor() {
-    this.migrationRepo = new MysqlMigrationRepository()
+    this.migrationRepo = new MysqlMigrationRepository();
   }
 
   async migrate(): Promise<void> {
@@ -41,11 +41,11 @@ class MysqlMigration implements MigrationInterface {
     if (dirExist) {
       return;
     }
-    await this.migrationRepo.create().execute()
+    await this.migrationRepo.create().execute();
   }
 
   async _getLastMigrationData(): Promise<MigrationData> {
-    let lastMigration = await this.migrationRepo.get()
+    let lastMigration = await this.migrationRepo.get();
 
     if (lastMigration.length > 0) {
       return lastMigration[0];

@@ -38,7 +38,7 @@ async function myCLI(): Promise<void> {
     let generator = new Generator(program.commandName);
     await generator.execute();
     console.log("generate a file");
-    return
+    return;
   }
 
   let config = await Configuration.newInstance();
@@ -51,7 +51,7 @@ async function myCLI(): Promise<void> {
   }
 
   if (program.rollback) {
-      await migrate.undo();
+    await migrate.undo();
   }
 }
 

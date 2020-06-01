@@ -29,12 +29,12 @@ class PostgresMigrationRepository implements MigrationRepositoryInterface {
   }
 
   async execute(): Promise<void> {
-      await postgres.query(this.query)
+    await postgres.query(this.query);
   }
 
   async get(): Promise<any> {
-      let result = await postgres.query(this.query)
-      return result
+    let result = await postgres.query(this.query);
+    return result;
   }
 
   toSql(): string {
