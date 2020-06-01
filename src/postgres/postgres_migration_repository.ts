@@ -1,4 +1,5 @@
 import MigrationRepositoryInterface from "../interfaces/migration_repository_interface.ts";
+import postgres from "./../driver/postgres.ts";
 
 class PostgresMigrationRepository implements MigrationRepositoryInterface {
   tableName: string = "migrations";
@@ -28,9 +29,12 @@ class PostgresMigrationRepository implements MigrationRepositoryInterface {
   }
 
   async execute(): Promise<void> {
+      await postgres.query(this.query)
   }
 
   async get(): Promise<any> {
+      let result = await postgres.query(this.query)
+      return result
   }
 
   toSql(): string {
