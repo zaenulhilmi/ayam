@@ -1,4 +1,4 @@
-import { Case } from "../deps.ts";
+import {Case} from "../deps.ts";
 import Configuration from "./configuration.ts";
 
 class Generator {
@@ -28,8 +28,7 @@ class Generator {
     try {
       let filePath =
         new URL("templates/migration_file.stub", import.meta.url).pathname;
-      let text = await Deno.readTextFile(filePath);
-      return text;
+      return await Deno.readTextFile(filePath);
     } catch (e) {
       console.error(e.message);
       throw e;
@@ -38,7 +37,6 @@ class Generator {
 
   async migrationText(): Promise<string> {
     let text = await this.getTemplate();
-    text = text.replace("CLASS_NAME", Case.pascalCase(this.command));
     text = text.replace("CLASS_NAME", Case.pascalCase(this.command));
     return text;
   }

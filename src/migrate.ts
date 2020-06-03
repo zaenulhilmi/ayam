@@ -8,10 +8,10 @@ class Migrate implements CommandInterface {
     this.migration = migration;
   }
   async execute(): Promise<void> {
-    this.migration.migrate();
+    await this.migration.migrate();
   }
   async undo(): Promise<void> {
-    this.migration.rollback();
+    await this.migration.rollback();
   }
 }
 

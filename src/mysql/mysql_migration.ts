@@ -17,22 +17,24 @@ interface MigrationData {
 
 class MysqlMigration implements MigrationInterface {
   data: Array<MigrationData> = [];
-  migrationRepo: MigrationRepositoryInterface;
+  migrationRepo: MigrationRepositoryInterface
 
-  constructor() {
-    this.migrationRepo = new MysqlMigrationRepository();
+  constructor(migrationRepo: MigrationRepositoryInterface) {
+    this.migrationRepo = migrationRepo;
   }
 
   async migrate(): Promise<void> {
+    console.log('mysql migrate')
     await this._createMigrationTableIfNotExist();
-    let lastMigration = await this._getLastMigrationData();
-    this.data = await this._getSortedUnexecutedMigrationData(lastMigration);
-    await this._executeData();
+    // let lastMigration = await this._getLastMigrationData();
+    // this.data = await this._getSortedUnexecutedMigrationData(lastMigration);
+    // await this._executeData();
   }
 
   async rollback(): Promise<void> {
-    let lastStepMigration = await this._getLastStepData();
-    await this._executeLastStepData(lastStepMigration);
+    console.log('mysql rollback')
+    // let lastStepMigration = await this._getLastStepData();
+    // await this._executeLastStepData(lastStepMigration);
   }
 
   async _createMigrationTableIfNotExist(): Promise<void> {
@@ -41,11 +43,11 @@ class MysqlMigration implements MigrationInterface {
     if (dirExist) {
       return;
     }
-    await this.migrationRepo.create().execute();
+    await this.migrationRepo.create().execute()
   }
 
   async _getLastMigrationData(): Promise<MigrationData> {
-    let lastMigration = await this.migrationRepo.get();
+    let lastMigration = await this.migrationRepo.lastMigration().get()
 
     if (lastMigration.length > 0) {
       return lastMigration[0];
