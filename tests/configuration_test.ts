@@ -45,18 +45,10 @@ Deno.test("adding configuration to created file", async () => {
   await tup.saveFile();
   await tup.addConfig();
   let textResult = await Deno.readTextFile(fileLocation);
-
-  let expectResult = `let MySQL = {
-  dialect: 'mysql',
-  migrationDirectory: './migrations',
-  hostname: '127.0.0.1',
-  username: 'root',
-  db: 'dbname',
-  password: 'password',
-};
-
-export default MySQL`;
-  assertEquals(textResult, expectResult);
+  let fileStubPath =
+      new URL("../src/templates/config_file.stub", import.meta.url).pathname;
+  let expectedResult = await Deno.readTextFile(fileStubPath);
+  assertEquals(textResult, expectedResult);
 });
 
 Deno.test("remove configuration file", async () => {

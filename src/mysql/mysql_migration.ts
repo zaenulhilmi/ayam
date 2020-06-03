@@ -24,7 +24,6 @@ class MysqlMigration implements MigrationInterface {
   }
 
   async migrate(): Promise<void> {
-    console.log("mysql migrate");
     await this._createMigrationTableIfNotExist();
     let lastMigration = await this._getLastMigrationData();
     this.data = await this._getSortedUnexecutedMigrationData(lastMigration);
@@ -32,7 +31,6 @@ class MysqlMigration implements MigrationInterface {
   }
 
   async rollback(): Promise<void> {
-    console.log("mysql rollback");
     let lastStepMigration = await this._getLastStepData();
     await this._executeLastStepData(lastStepMigration);
   }

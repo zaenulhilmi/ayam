@@ -3,6 +3,7 @@ interface MigrationRepositoryInterface {
   create(): MigrationRepositoryInterface;
   insert(fileName: string, step: number): MigrationRepositoryInterface;
   lastMigration(): MigrationRepositoryInterface;
+  lastStepMigrations(): MigrationRepositoryInterface;
   removeAllLastStep(): MigrationRepositoryInterface;
 
   execute(): Promise<void>;

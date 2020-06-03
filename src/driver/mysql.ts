@@ -7,6 +7,9 @@ let { DATABASE_HOST, DATABASE_USER, DATABASE_PASSWORD, DATABASE_NAME } =
 let client: Client;
 class MySql {
   async getInstance(): Promise<Client> {
+    // let dir = await Deno.cwd()
+    // let x = await import(`${dir}/migration.config.ts`);
+    // console.log(x)
     if (client) {
       return client;
     } else {
