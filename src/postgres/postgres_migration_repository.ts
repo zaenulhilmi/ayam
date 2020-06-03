@@ -22,6 +22,12 @@ class PostgresMigrationRepository implements MigrationRepositoryInterface {
     return this;
   }
 
+  lastStepMigrations(): MigrationRepositoryInterface {
+    this.query =
+      `select * from migrations where step = (select max(step) from migrations);`;
+    return this;
+  }
+
   removeAllLastStep(): MigrationRepositoryInterface {
     this.query =
       `delete from migrations where step in (select max(step) from migrations);`;

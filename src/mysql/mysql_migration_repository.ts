@@ -22,6 +22,12 @@ class MysqlMigrationRepository implements MigrationRepositoryInterface {
     return this;
   }
 
+  lastStepMigrations(): MigrationRepositoryInterface {
+    this.query =
+      `select * from migrations where step = (select max(step) from migrations);`;
+    return this;
+  }
+
   removeAllLastStep(): MigrationRepositoryInterface {
     this.query =
       `delete t.* from migrations t inner join (select max(step) max_step FROM migrations) tmax ON t.step = tmax.max_step;`;

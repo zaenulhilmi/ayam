@@ -33,6 +33,15 @@ Deno.test(description("get last migration"), () => {
   );
 });
 
+Deno.test(description("get last migration"), () => {
+  let repo: MigrationRepositoryInterface = new PostgresMigrationRepository();
+  repo.lastStepMigrations();
+  assertEquals(
+    repo.toSql(),
+    `select * from migrations where step = (select max(step) from migrations);`,
+  );
+});
+
 Deno.test(description("delete last migration step"), () => {
   let repo: MigrationRepositoryInterface = new PostgresMigrationRepository();
   repo.removeAllLastStep();

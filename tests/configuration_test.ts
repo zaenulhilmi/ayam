@@ -46,7 +46,7 @@ Deno.test("adding configuration to created file", async () => {
   await tup.addConfig();
   let textResult = await Deno.readTextFile(fileLocation);
   let fileStubPath =
-      new URL("../src/templates/config_file.stub", import.meta.url).pathname;
+    new URL("../src/templates/config_file.stub", import.meta.url).pathname;
   let expectedResult = await Deno.readTextFile(fileStubPath);
   assertEquals(textResult, expectedResult);
 });
