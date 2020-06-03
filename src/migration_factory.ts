@@ -1,4 +1,5 @@
 import MysqlMigration from "./mysql/mysql_migration.ts";
+import MysqlMigrationRepository from "./mysql/mysql_migration_repository.ts";
 import MigrationInterface from "./interfaces/migration_interface.ts";
 import PostgresMigration from "./postgres/postgres_migration.ts";
 
@@ -11,7 +12,7 @@ class MigrationFactory {
   get(): MigrationInterface {
     switch (this.dialect) {
       case "mysql":
-        return new MysqlMigration();
+        return new MysqlMigration(new MysqlMigrationRepository());
       case "postgres":
         return new PostgresMigration();
     }

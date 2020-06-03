@@ -1,4 +1,4 @@
-import {Case} from "../deps.ts";
+import { Case } from "../deps.ts";
 import Configuration from "./configuration.ts";
 
 class Generator {
@@ -38,6 +38,7 @@ class Generator {
   async migrationText(): Promise<string> {
     let text = await this.getTemplate();
     text = text.replace("CLASS_NAME", Case.pascalCase(this.command));
+    text = text.replace("CLASS_NAME", Case.pascalCase(this.command));
     return text;
   }
 
@@ -46,32 +47,36 @@ class Generator {
     let config = await Configuration.newInstance();
     let dir = await config.get("migrationDirectory");
     let text = await this.migrationText();
-    let isDirExist: boolean = true;
-    try {
-      await Deno.stat(dir);
-    } catch (e) {
-      isDirExist = false;
-    }
+    let isDirExist = await this._isPathExist(dir);
     if (!isDirExist) {
       await Deno.mkdir(dir, { recursive: true });
     }
 
     try {
-      await Deno.stat(`${dir}/schema_interface.ts`);
-      await Deno.stat(`${dir}/builder_interface.ts`);
-      await Deno.stat(`${dir}/builder_option_interface.ts`);
+      await Deno.stat(`${dir}/interfaces/schema_interface.ts`);
+      await Deno.stat(`${dir}/interfaces/builder_interface.ts`);
+      await Deno.stat(`${dir}/interfaces/builder_option_interface.ts`);
     } catch (e) {
+      if (!await this._isPathExist(`${dir}/interfaces`)) {
+        await Deno.mkdir(`${dir}/interfaces`, { recursive: true });
+      }
       let schemaFilePath =
-        new URL("schema_interface.ts", import.meta.url).pathname;
+        new URL("interfaces/schema_interface.ts", import.meta.url).pathname;
       let builderFilePath =
-        new URL("builder_interface.ts", import.meta.url).pathname;
+        new URL("interfaces/builder_interface.ts", import.meta.url).pathname;
       let builderOptionFilePath =
-        new URL("builder_interface.ts", import.meta.url).pathname;
-      await Deno.copyFile(schemaFilePath, `${dir}/schema_interface.ts`);
-      await Deno.copyFile(builderFilePath, `${dir}/builder_interface.ts`);
+        new URL("interfaces/builder_interface.ts", import.meta.url).pathname;
+      await Deno.copyFile(
+        schemaFilePath,
+        `${dir}/interfaces/schema_interface.ts`,
+      );
+      await Deno.copyFile(
+        builderFilePath,
+        `${dir}/interfaces/builder_interface.ts`,
+      );
       await Deno.copyFile(
         builderOptionFilePath,
-        `${dir}/builder_option_interface.ts`,
+        `${dir}/interfaces/builder_option_interface.ts`,
       );
     }
 
@@ -96,6 +101,15 @@ class Generator {
       return "0" + number.toString();
     }
     return number.toString();
+  }
+
+  async _isPathExist(fileName: string): Promise<boolean> {
+    try {
+      await Deno.stat(fileName);
+      return true;
+    } catch (e) {
+      return false;
+    }
   }
 }
 

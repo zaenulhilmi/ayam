@@ -17,24 +17,24 @@ interface MigrationData {
 
 class MysqlMigration implements MigrationInterface {
   data: Array<MigrationData> = [];
-  migrationRepo: MigrationRepositoryInterface
+  migrationRepo: MigrationRepositoryInterface;
 
   constructor(migrationRepo: MigrationRepositoryInterface) {
     this.migrationRepo = migrationRepo;
   }
 
   async migrate(): Promise<void> {
-    console.log('mysql migrate')
+    console.log("mysql migrate");
     await this._createMigrationTableIfNotExist();
-    // let lastMigration = await this._getLastMigrationData();
-    // this.data = await this._getSortedUnexecutedMigrationData(lastMigration);
-    // await this._executeData();
+    let lastMigration = await this._getLastMigrationData();
+    this.data = await this._getSortedUnexecutedMigrationData(lastMigration);
+    await this._executeData();
   }
 
   async rollback(): Promise<void> {
-    console.log('mysql rollback')
-    // let lastStepMigration = await this._getLastStepData();
-    // await this._executeLastStepData(lastStepMigration);
+    console.log("mysql rollback");
+    let lastStepMigration = await this._getLastStepData();
+    await this._executeLastStepData(lastStepMigration);
   }
 
   async _createMigrationTableIfNotExist(): Promise<void> {
@@ -43,11 +43,11 @@ class MysqlMigration implements MigrationInterface {
     if (dirExist) {
       return;
     }
-    await this.migrationRepo.create().execute()
+    await this.migrationRepo.create().execute();
   }
 
   async _getLastMigrationData(): Promise<MigrationData> {
-    let lastMigration = await this.migrationRepo.lastMigration().get()
+    let lastMigration = await this.migrationRepo.lastMigration().get();
 
     if (lastMigration.length > 0) {
       return lastMigration[0];
@@ -55,10 +55,8 @@ class MysqlMigration implements MigrationInterface {
 
     return {
       id: 0,
-      file_name: "lala",
+      file_name: "",
       step: 0,
-      created_at: new Date(),
-      updated_at: new Date(),
     };
   }
 
@@ -105,18 +103,14 @@ class MysqlMigration implements MigrationInterface {
         (await import(`${projectDir}/${migrationDir}/${x.file_name}`)).default;
       let mysqlSchemaRepository = new MySqlSchema(new MysqlSchemaRepository());
       let object = new Class();
-      await mysql.execute(
-        `INSERT INTO migrations SET file_name=?, step=?`,
-        [x.file_name, x.step],
-      );
+      await this.migrationRepo.insert(x.file_name, x.step).execute();
       await object.up(mysqlSchemaRepository);
     }
   }
 
   async _getLastStepData() {
-    let lastMigration = await mysql.query(
-      "SELECT * FROM migrations WHERE step = (SELECT MAX(step) FROM migrations)",
-    );
+    let lastMigration = await this.migrationRepo.lastStepMigrations().get();
+
     if (lastMigration.length > 0) {
       return lastMigration;
     }
@@ -133,14 +127,15 @@ class MysqlMigration implements MigrationInterface {
     let config = await Configuration.newInstance();
     let migrationDir = await config.get("migrationDirectory");
     let projectDir = await Deno.cwd();
+    console.log(lastStepMigrations);
     for await (let x of lastStepMigrations) {
       let Class =
         (await import(`${projectDir}/${migrationDir}/${x.file_name}`)).default;
       let mysqlSchemaRepository = new MySqlSchema(new MysqlSchemaRepository());
       let object = new Class();
-      await mysql.execute(`DELETE FROM migrations WHERE id=?`, [x.id]);
       await object.down(mysqlSchemaRepository);
     }
+    await this.migrationRepo.removeAllLastStep().execute();
   }
 }
 

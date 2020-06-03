@@ -24,26 +24,21 @@ class Configuration extends ConfigurationAbstract {
   }
 
   async addConfig(): Promise<void> {
-    let config = `let MySQL = {
-  dialect: 'mysql',
-  migrationDirectory: './migrations',
-  hostname: '127.0.0.1',
-  username: 'root',
-  db: 'dbname',
-  password: 'password',
-};
-
-export default MySQL`;
-    await Deno.writeTextFile(this.fileLocation, config);
+    try {
+      let filePath =
+        new URL("templates/config_file.stub", import.meta.url).pathname;
+      let config = await Deno.readTextFile(filePath);
+      await Deno.writeTextFile(this.fileLocation, config);
+    } catch (e) {
+      console.error(e.message);
+      throw e;
+    }
   }
 
   async exist(): Promise<boolean> {
     try {
       let res = await Deno.stat(this.fileLocation);
-      if (!res.isFile) {
-        return false;
-      }
-      return true;
+      return res.isFile;
     } catch (e) {
       return false;
     }
