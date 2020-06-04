@@ -44,12 +44,13 @@ class MysqlSchemaRepository implements SchemaRepositoryInterface {
   }
 
   async execute(): Promise<void> {
-    await mysql.execute(this.query);
+    let client = await mysql.getInstance();
+    await client.execute(this.query);
   }
 
   async get(): Promise<any> {
-    let res = await mysql.query(this.query);
-    return res;
+    let client = await mysql.getInstance();
+    return await client.query(this.query);
   }
 
   toSql(): string {

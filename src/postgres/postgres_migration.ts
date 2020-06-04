@@ -1,5 +1,6 @@
 import MigrationInterface from "./../interfaces/migration_interface.ts";
 import MigrationRepositoryInterface from "../interfaces/migration_repository_interface.ts";
+import postgres from "../driver/postgres.ts";
 
 class PostgresMigration implements MigrationInterface {
   migrationRepo: MigrationRepositoryInterface;
@@ -9,6 +10,8 @@ class PostgresMigration implements MigrationInterface {
   }
 
   async migrate(): Promise<void> {
+    let hello = await postgres.getInstance();
+
     console.log("postgres migrate");
   }
 
