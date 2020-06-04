@@ -1,7 +1,6 @@
-import MysqlMigration from "./mysql/mysql_migration.ts";
+import Migration from "./migration.ts";
 import MysqlMigrationRepository from "./mysql/mysql_migration_repository.ts";
 import MigrationInterface from "./interfaces/migration_interface.ts";
-import PostgresMigration from "./postgres/postgres_migration.ts";
 import PostgresMigrationRepository from "./postgres/postgres_migration_repository.ts";
 
 class MigrationFactory {
@@ -13,9 +12,9 @@ class MigrationFactory {
   get(): MigrationInterface {
     switch (this.dialect) {
       case "mysql":
-        return new MysqlMigration(new MysqlMigrationRepository());
+        return new Migration(new MysqlMigrationRepository());
       case "postgres":
-        return new PostgresMigration(new PostgresMigrationRepository());
+        return new Migration(new PostgresMigrationRepository());
     }
     throw new Error("dialect is not defined");
   }

@@ -1,4 +1,7 @@
-import { assertEquals, assert } from "https://deno.land/std/testing/asserts.ts";
+import {
+  assertEquals,
+  assertThrows,
+} from "https://deno.land/std/testing/asserts.ts";
 import Configuration from "../src/configuration.ts";
 
 let realPath = await Deno.realPath(".");

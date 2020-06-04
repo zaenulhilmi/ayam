@@ -43,11 +43,13 @@ class PostgresSchemaRepository implements SchemaRepositoryInterface {
   }
 
   async execute(): Promise<void> {
-    await postgres.query(this.query);
+    let client = await postgres.getInstance();
+    await client.query(this.query);
   }
 
   async get(): Promise<any> {
-    let result = await postgres.query(this.query);
+    let client = await postgres.getInstance();
+    let result = await client.query(this.query);
     return result;
   }
 

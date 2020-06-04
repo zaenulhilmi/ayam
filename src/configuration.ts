@@ -3,7 +3,7 @@ import ConfigurationAbstract from "./configuration_abstract.ts";
 class Configuration extends ConfigurationAbstract {
   fileLocation: string = "";
 
-  constructor() {
+  private constructor() {
     super();
   }
 

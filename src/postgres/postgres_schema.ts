@@ -1,12 +1,11 @@
 import SchemaInterface from "./../interfaces/schema_interface.ts";
 import BuilderInterface from "./../interfaces/builder_interface.ts";
 import PostgresBuilder from "./postgres_builder.ts";
-import RepositoryInterface from "./../interfaces/repository_interface.ts";
-import postgres from "./../driver/postgres.ts";
+import SchemaRepositoryInterface from "./../interfaces/schema_repository_interface.ts";
 class PostgresSchemaRepository implements SchemaInterface {
-  repo: RepositoryInterface;
+  repo: SchemaRepositoryInterface;
 
-  constructor(repo: RepositoryInterface) {
+  constructor(repo: SchemaRepositoryInterface) {
     this.repo = repo;
   }
 
@@ -28,19 +27,12 @@ class PostgresSchemaRepository implements SchemaInterface {
   }
 
   async getColumnType(tableName: string, columnName: string): Promise<string> {
-    let res = await postgres.query(
-      `SELECT udt_name FROM INFORMATION_SCHEMA.COLUMNS WHERE 
-        TABLE_SCHEMA= 'public' AND 
-        TABLE_NAME = $1 AND
-        COLUMN_NAME = $2;`,
-      tableName,
-      columnName,
-    );
+    let res = await this.repo.findTableColumn(tableName, columnName).get();
     if (res.rows.length == 0) {
       return "";
     }
 
-    return res.rows[0][0];
+    return res.rows[0]["udt_name"];
   }
 
   async create(
@@ -49,7 +41,7 @@ class PostgresSchemaRepository implements SchemaInterface {
   ): Promise<void> {
     let postgresBuilder: BuilderInterface = new PostgresBuilder(tableName);
     callback(postgresBuilder);
-    postgresBuilder.build();
+    await postgresBuilder.build();
   }
 
   async drop(tableName: string): Promise<void> {

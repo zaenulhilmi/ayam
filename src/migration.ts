@@ -1,10 +1,10 @@
-import MigrationInterface from "./../interfaces/migration_interface.ts";
-import MySqlSchema from "./mysql_schema.ts";
-import SchemaInterface from "./../interfaces/schema_interface.ts";
-import Configuration from "./../configuration.ts";
-import MysqlSchemaRepository from "./mysql_schema_repository.ts";
-import MigrationRepositoryInterface from "../interfaces/migration_repository_interface.ts";
-import SchemaFactory from "../schema_factory.ts";
+import MigrationInterface from "./interfaces/migration_interface.ts";
+import MySqlSchema from "./mysql/mysql_schema.ts";
+import SchemaInterface from "./interfaces/schema_interface.ts";
+import Configuration from "./configuration.ts";
+import MysqlSchemaRepository from "./mysql/mysql_schema_repository.ts";
+import MigrationRepositoryInterface from "./interfaces/migration_repository_interface.ts";
+import SchemaFactory from "./schema_factory.ts";
 
 interface MigrationData {
   id?: number;
@@ -14,7 +14,7 @@ interface MigrationData {
   updated_at?: Date;
 }
 
-class MysqlMigration implements MigrationInterface {
+class Migration implements MigrationInterface {
   data: Array<MigrationData> = [];
   migrationRepo: MigrationRepositoryInterface;
   dialect: string;
@@ -24,7 +24,7 @@ class MysqlMigration implements MigrationInterface {
     if (this.migrationRepo.constructor.name == "MysqlMigrationRepository") {
       this.dialect = "mysql";
     } else if (
-      this.migrationRepo.constuctor.name == "PostgresMigrationRepository"
+      this.migrationRepo.constructor.name == "PostgresMigrationRepository"
     ) {
       this.dialect = "postgres";
     } else {
@@ -45,7 +45,7 @@ class MysqlMigration implements MigrationInterface {
   }
 
   async _createMigrationTableIfNotExist(): Promise<void> {
-    let schema: SchemaInterface = new MySqlSchema(new MysqlSchemaRepository());
+    let schema: SchemaInterface = new SchemaFactory(this.dialect).get();
     let dirExist = await schema.hasTable("migrations");
     if (dirExist) {
       return;
@@ -108,7 +108,7 @@ class MysqlMigration implements MigrationInterface {
     for await (let x of this.data) {
       let Class =
         (await import(`${projectDir}/${migrationDir}/${x.file_name}`)).default;
-      let schema: SchemaInterface = new SchemaFactory(this.dialect).get()
+      let schema: SchemaInterface = new SchemaFactory(this.dialect).get();
       let object = new Class();
       await this.migrationRepo.insert(x.file_name, x.step).execute();
       await object.up(schema);
@@ -138,7 +138,7 @@ class MysqlMigration implements MigrationInterface {
     for await (let x of lastStepMigrations) {
       let Class =
         (await import(`${projectDir}/${migrationDir}/${x.file_name}`)).default;
-      let schema: SchemaInterface = new SchemaFactory(this.dialect).get
+      let schema: SchemaInterface = new SchemaFactory(this.dialect).get();
       let object = new Class();
       await object.down(schema);
     }
@@ -146,4 +146,4 @@ class MysqlMigration implements MigrationInterface {
   }
 }
 
-export default MysqlMigration;
+export default Migration;
