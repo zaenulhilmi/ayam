@@ -31,7 +31,7 @@ class MysqlMigration implements MigrationInterface {
   }
 
   async rollback(): Promise<void> {
-    let lastStepMigration = await this._getLastStepData();
+    let lastStepMigration = await this._getLastStepMigrations();
     await this._executeLastStepData(lastStepMigration);
   }
 
@@ -106,7 +106,7 @@ class MysqlMigration implements MigrationInterface {
     }
   }
 
-  async _getLastStepData() {
+  async _getLastStepMigrations() {
     let lastMigration = await this.migrationRepo.lastStepMigrations().get();
 
     if (lastMigration.length > 0) {
@@ -114,7 +114,7 @@ class MysqlMigration implements MigrationInterface {
     }
     return {
       id: 0,
-      file_name: "lala",
+      file_name: "",
       step: 0,
       created_at: new Date(),
       updated_at: new Date(),

@@ -25,5 +25,4 @@ class MySql {
 }
 
 let mySql = new MySql();
-let instance = await mySql.getInstance();
-export default instance;
+export default mySql;

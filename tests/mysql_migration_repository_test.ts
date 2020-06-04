@@ -33,8 +33,6 @@ Deno.test(description("get last migration"), () => {
   );
 });
 
-// SELECT * FROM migrations WHERE step = (SELECT MAX(step) FROM migrations);
-
 Deno.test(description("get last steps migration"), () => {
   let repo: MigrationRepositoryInterface = new MysqlMigrationRepository();
   repo.lastStepMigrations();

@@ -5,6 +5,9 @@ class MysqlMigrationRepository implements MigrationRepositoryInterface {
   tableName: string = "migrations";
   query: string = "";
 
+  constructor() {
+  }
+
   create(): MigrationRepositoryInterface {
     this.query =
       `create table migrations (id bigint primary key auto_increment, file_name varchar(255) not null, step int not null, created_at timestamp default current_timestamp, updated_at timestamp default current_timestamp);`;
@@ -35,12 +38,13 @@ class MysqlMigrationRepository implements MigrationRepositoryInterface {
   }
 
   async execute(): Promise<void> {
-    await mysql.execute(this.query);
+    let client = await mysql.getInstance();
+    await client.execute(this.query);
   }
 
   async get(): Promise<any> {
-    let result = mysql.query(this.query);
-    return result;
+    let client = await mysql.getInstance();
+    return client.query(this.query);
   }
 
   toSql(): string {

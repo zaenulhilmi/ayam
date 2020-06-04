@@ -1,7 +1,6 @@
 import { Denomander } from "./deps.ts";
 import Configuration from "./src/configuration.ts";
 import Generator from "./src/generator.ts";
-import MysqlMigration from "./src/mysql/mysql_migration.ts";
 import Migrate from "./src/migrate.ts";
 import MigrationInterface from "./src/interfaces/migration_interface.ts";
 import CommandInterface from "./src/interfaces/command_interface.ts";
@@ -21,7 +20,6 @@ async function myCLI(): Promise<void> {
     .command("generate [commandName]", "create migration file")
     .command("migrate", "migrating")
     .command("rollback", "rollback")
-    .command("pg", "testing")
     .parse(Deno.args);
 
   if (program.initiate) {

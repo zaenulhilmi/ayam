@@ -31,5 +31,5 @@ class Postgres {
 }
 
 let postgres = new Postgres();
-let instance = await postgres.getInstance();
-export default instance;
+// let instance = await postgres.getInstance();
+export default postgres;
