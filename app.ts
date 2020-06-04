@@ -5,6 +5,7 @@ import Migrate from "./src/migrate.ts";
 import MigrationInterface from "./src/interfaces/migration_interface.ts";
 import CommandInterface from "./src/interfaces/command_interface.ts";
 import MigrationFactory from "./src/migration_factory.ts";
+
 async function runCLI(): Promise<void> {
   const program = new Denomander(
     {
@@ -30,6 +31,7 @@ async function runCLI(): Promise<void> {
       await config.create();
       console.log("configuration created");
     }
+    return
   }
 
   if (program.generate) {
