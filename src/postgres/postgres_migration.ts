@@ -10,8 +10,6 @@ class PostgresMigration implements MigrationInterface {
   }
 
   async migrate(): Promise<void> {
-    let hello = await postgres.getInstance();
-
     console.log("postgres migrate");
   }
 

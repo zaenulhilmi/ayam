@@ -1,7 +1,5 @@
 import { Client } from "https://deno.land/x/postgres/mod.ts";
 
-import { config } from "./../../deps.ts";
-
 let client: Client;
 class Postgres {
   async getInstance(): Promise<Client> {
@@ -28,5 +26,4 @@ class Postgres {
 }
 
 let postgres = new Postgres();
-// let instance = await postgres.getInstance();
 export default postgres;
