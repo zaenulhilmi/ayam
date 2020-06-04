@@ -5,7 +5,7 @@ import Migrate from "./src/migrate.ts";
 import MigrationInterface from "./src/interfaces/migration_interface.ts";
 import CommandInterface from "./src/interfaces/command_interface.ts";
 import MigrationFactory from "./src/migration_factory.ts";
-async function myCLI(): Promise<void> {
+async function runCLI(): Promise<void> {
   const program = new Denomander(
     {
       app_name: "Deno Migration",
@@ -54,5 +54,5 @@ async function myCLI(): Promise<void> {
 }
 
 if (import.meta.main) {
-  await myCLI();
+  await runCLI();
 }
