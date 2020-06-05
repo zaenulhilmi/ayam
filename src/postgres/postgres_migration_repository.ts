@@ -1,5 +1,6 @@
 import MigrationRepositoryInterface from "../interfaces/migration_repository_interface.ts";
 import postgres from "./../driver/postgres.ts";
+import MigrationEntityInterface from "../interfaces/entities/migration_entity_interface.ts";
 
 class PostgresMigrationRepository implements MigrationRepositoryInterface {
   tableName: string = "migrations";
@@ -39,10 +40,38 @@ class PostgresMigrationRepository implements MigrationRepositoryInterface {
     await client.query(this.query);
   }
 
-  async get(): Promise<any> {
+  async get(): Promise<Array<MigrationEntityInterface>> {
     let client = await postgres.getInstance();
     let result = await client.query(this.query);
-    return result.rows;
+    let migrations: Array<MigrationEntityInterface> = [];
+    for (let row of result.rows) {
+      let migration: MigrationEntityInterface = {
+        id: row[0],
+        file_name: row[1],
+        step: row[2],
+        created_at: row[3],
+        updated_at: row[4],
+      };
+      migrations.push(migration);
+    }
+    return migrations;
+  }
+
+  async first(): Promise<MigrationEntityInterface | null> {
+    let client = await postgres.getInstance();
+    let result = await client.query(this.query);
+    if (result.rows.length == 0) {
+      return null;
+    }
+    let row = result.rows[0];
+    let migration: MigrationEntityInterface = {
+      id: row[0],
+      file_name: row[1],
+      step: row[2],
+      created_at: row[3],
+      updated_at: row[4],
+    };
+    return migration;
   }
 
   toSql(): string {
