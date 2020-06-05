@@ -31,7 +31,7 @@ async function runCLI(): Promise<void> {
       await config.create();
       console.log("configuration created");
     }
-    return
+    return;
   }
 
   if (program.generate) {

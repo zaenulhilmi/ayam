@@ -1,5 +1,6 @@
 import MigrationRepositoryInterface from "./../interfaces/migration_repository_interface.ts";
 import mysql from "./../driver/mysql.ts";
+import MigrationEntityInterface from "../interfaces/entities/migration_entity_interface.ts";
 
 class MysqlMigrationRepository implements MigrationRepositoryInterface {
   tableName: string = "migrations";
@@ -42,9 +43,42 @@ class MysqlMigrationRepository implements MigrationRepositoryInterface {
     await client.execute(this.query);
   }
 
-  async get(): Promise<any> {
+  async get(): Promise<Array<MigrationEntityInterface>> {
     let client = await mysql.getInstance();
-    return client.query(this.query);
+    let result = await client.query(this.query);
+    let migrations: Array<MigrationEntityInterface> = [];
+    for (let item of result) {
+      let migration: MigrationEntityInterface = {
+        id: item.id,
+        file_name: item.file_name,
+        step: item.step,
+        created_at: item.created_at,
+        updated_at: item.updated_at,
+      };
+      migrations.push(migration);
+    }
+
+    return migrations;
+  }
+
+  async first(): Promise<MigrationEntityInterface | null> {
+    let client = await mysql.getInstance();
+    let result = await client.query(this.query);
+
+    if (result.length == 0) {
+      return null;
+    }
+
+    let item = result[0];
+    let migration: MigrationEntityInterface = {
+      id: item.id,
+      file_name: item.file_name,
+      step: item.step,
+      created_at: item.created_at,
+      updated_at: item.updated_at,
+    };
+
+    return migration;
   }
 
   toSql(): string {

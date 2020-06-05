@@ -1,21 +1,12 @@
 import MigrationInterface from "./interfaces/migration_interface.ts";
-import MySqlSchema from "./mysql/mysql_schema.ts";
 import SchemaInterface from "./interfaces/schema_interface.ts";
 import Configuration from "./configuration.ts";
-import MysqlSchemaRepository from "./mysql/mysql_schema_repository.ts";
 import MigrationRepositoryInterface from "./interfaces/migration_repository_interface.ts";
 import SchemaFactory from "./schema_factory.ts";
-
-interface MigrationData {
-  id?: number;
-  file_name: string;
-  step: number;
-  created_at?: Date;
-  updated_at?: Date;
-}
+import MigrationEntityInterface from "./interfaces/entities/migration_entity_interface.ts";
 
 class Migration implements MigrationInterface {
-  data: Array<MigrationData> = [];
+  data: Array<MigrationEntityInterface> = [];
   migrationRepo: MigrationRepositoryInterface;
   dialect: string;
 
@@ -34,8 +25,8 @@ class Migration implements MigrationInterface {
 
   async migrate(): Promise<void> {
     await this._createMigrationTableIfNotExist();
-    let lastMigration = await this._getLastMigrationData();
-    this.data = await this._getSortedUnexecutedMigrationData(lastMigration);
+    let lastMigration = await this._getLastMigrationEntity();
+    this.data = await this._getSortedQueuedMigrationEntity(lastMigration);
     await this._executeData();
   }
 
@@ -53,34 +44,22 @@ class Migration implements MigrationInterface {
     await this.migrationRepo.create().execute();
   }
 
-  async _getLastMigrationData(): Promise<MigrationData> {
-    let lastMigration = await this.migrationRepo.lastMigration().get();
-
-    if (lastMigration.length > 0) {
-      return lastMigration[0];
+  async _getLastMigrationEntity(): Promise<MigrationEntityInterface | null> {
+    let lastMigration = await this.migrationRepo.lastMigration().first();
+    if (!lastMigration) {
+      return null;
     }
-
-    return {
-      id: 0,
-      file_name: "",
-      step: 0,
-    };
+    return lastMigration;
   }
 
-  async _getSortedUnexecutedMigrationData(
-    lastMigration: MigrationData,
-  ): Promise<Array<MigrationData>> {
+  async _getSortedQueuedMigrationEntity(
+    lastMigration: MigrationEntityInterface | null,
+  ): Promise<Array<MigrationEntityInterface>> {
     let config = await Configuration.newInstance();
     let migrationDir = await config.get("migrationDirectory");
-
     let result: Array<string> = [];
-    if (lastMigration.id == 0) {
-      for await (let dir of await Deno.readDir(migrationDir)) {
-        if (dir.name.startsWith("20") && dir.name.endsWith(".ts")) {
-          result.push(dir.name);
-        }
-      }
-    } else {
+
+    if (lastMigration) {
       for await (let dir of await Deno.readDir(migrationDir)) {
         if (
           dir.name.startsWith("20") && dir.name.endsWith(".ts") &&
@@ -89,13 +68,20 @@ class Migration implements MigrationInterface {
           result.push(dir.name);
         }
       }
+    } else {
+      for await (let dir of await Deno.readDir(migrationDir)) {
+        if (dir.name.startsWith("20") && dir.name.endsWith(".ts")) {
+          result.push(dir.name);
+        }
+      }
     }
 
     result.sort();
 
-    let objectResult: Array<MigrationData> = [];
+    let objectResult: Array<MigrationEntityInterface> = [];
+    let step = lastMigration ? lastMigration.step + 1 : 1;
     for await (let fileName of result) {
-      let data = { file_name: fileName, step: lastMigration.step + 1 };
+      let data: MigrationEntityInterface = { file_name: fileName, step: step };
       objectResult.push(data);
     }
     return objectResult;
@@ -115,26 +101,16 @@ class Migration implements MigrationInterface {
     }
   }
 
-  async _getLastStepMigrations() {
-    let lastMigration = await this.migrationRepo.lastStepMigrations().get();
-
-    if (lastMigration.length > 0) {
-      return lastMigration;
-    }
-    return {
-      id: 0,
-      file_name: "",
-      step: 0,
-      created_at: new Date(),
-      updated_at: new Date(),
-    };
+  async _getLastStepMigrations(): Promise<Array<MigrationEntityInterface>> {
+    return await this.migrationRepo.lastStepMigrations().get();
   }
 
-  async _executeLastStepData(lastStepMigrations: Array<MigrationData>) {
+  async _executeLastStepData(
+    lastStepMigrations: Array<MigrationEntityInterface>,
+  ) {
     let config = await Configuration.newInstance();
     let migrationDir = await config.get("migrationDirectory");
     let projectDir = await Deno.cwd();
-    console.log(lastStepMigrations);
     for await (let x of lastStepMigrations) {
       let Class =
         (await import(`${projectDir}/${migrationDir}/${x.file_name}`)).default;

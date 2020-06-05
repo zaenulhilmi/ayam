@@ -42,7 +42,7 @@ class PostgresMigrationRepository implements MigrationRepositoryInterface {
   async get(): Promise<any> {
     let client = await postgres.getInstance();
     let result = await client.query(this.query);
-    return result;
+    return result.rows;
   }
 
   toSql(): string {

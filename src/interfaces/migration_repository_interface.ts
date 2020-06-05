@@ -1,3 +1,5 @@
+import MigrationEntityInterface from "./entities/migration_entity_interface.ts";
+
 interface MigrationRepositoryInterface {
   query: string;
   create(): MigrationRepositoryInterface;
@@ -7,7 +9,8 @@ interface MigrationRepositoryInterface {
   removeAllLastStep(): MigrationRepositoryInterface;
 
   execute(): Promise<void>;
-  get(): Promise<any>;
+  get(): Promise<Array<MigrationEntityInterface>>;
+  first(): Promise<MigrationEntityInterface | null>;
   toSql(): string;
 }
 
