@@ -19,8 +19,8 @@ async function runCLI(): Promise<void> {
   program
     .command("initiate", "Initial Config")
     .command("generate [commandName]", "create migration file")
-    .command("migrate", "migrating")
-    .command("rollback", "rollback")
+    .command("migrate", "running migration")
+    .command("rollback", "undo previous migration")
     .parse(Deno.args);
 
   if (program.initiate) {

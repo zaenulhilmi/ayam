@@ -12,7 +12,7 @@ Need to change after it got the url
 ## Generating Configuration
 By default, Ayam will use migration.config.ts as it's default configuration file. We can generate the file using:
 ```
-ayam generate
+ayam initiate
 ```
 The content of the file will be the configuration of database:
 ```typescript
