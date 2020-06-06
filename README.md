@@ -76,7 +76,27 @@ ayam rollback
 ```
 
 ## Tables
-<!-- todo add something about creating table, renaming, drop, etc, -->
+### Create table
+To create table, use Schema object inside up method on migration class to call create method.
+```typescript
+async up(schema: Schema): Promise<void> {
+  schema.create('table_name', async (table: Builder) => {
+    table.integer('column_name')
+    table.string('column_name_1')
+  })
+}
+```
+
+### Checking for table or column existance
+to check table existence use `schema.hasTable('table_name')`
+
+to check column existence use `schema.hasColumn('table_name', 'column_name`)`
+
+### Dropping table
+To drop table from database, use `schema.drop('table_name`)`
+
+### Renaming table
+To rename table, use `schema.rename('oldName`, 'newName')`
 
 ## Columns
 <!-- todo add all available columns -->
