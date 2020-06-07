@@ -96,8 +96,7 @@ to check column existence use `schema.hasColumn('table_name', 'column_name`)`
 To drop table from database, use `schema.drop('table_name`)`
 
 ### Renaming table
-To rename table, use `schema.rename('oldName`, 'newName')`
+To rename table, use `schema.rename('oldName', 'newName')`
 
 ## Columns
 <!-- todo add all available columns -->
-

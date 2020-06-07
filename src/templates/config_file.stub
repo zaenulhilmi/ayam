@@ -16,4 +16,9 @@ let Postgres = {
   password: 'password',
 }
 
+let Sqlite = {
+    dialect: 'sqlite',
+    file_path: 'database.db'
+}
+
 export default MySQL
