@@ -15,6 +15,7 @@ class PostgresSchemaRepository implements SchemaRepositoryInterface {
     this.query = query;
     return this;
   }
+
   findTable(tableName: string): SchemaRepositoryInterface {
     this.query =
       `select table_name from information_schema.tables where table_schema='public' and table_name='${tableName}';`;
@@ -68,8 +69,20 @@ class PostgresSchemaRepository implements SchemaRepositoryInterface {
     return this.query;
   }
 
-  first(): Promise<SchemaEntityInterface | null> {
-    return Promise.resolve(null);
+  async first(): Promise<SchemaEntityInterface | null> {
+    let client = await postgres.getInstance();
+    let result = await client.query(this.query);
+    if (result.rows.length == 0) {
+      return null;
+    }
+    let item = result.rows[0];
+    let schema: SchemaEntityInterface = {
+      tableName: item[0],
+    };
+    if (item[1]) {
+      schema.columnName = item[1];
+    }
+    return schema;
   }
 }
 
