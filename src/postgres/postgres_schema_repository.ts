@@ -1,5 +1,6 @@
 import SchemaRepositoryInterface from "./../interfaces/schema_repository_interface.ts";
 import postgres from "./../driver/postgres.ts";
+import SchemaEntityInterface from "../interfaces/entities/schema_entity_interface.ts";
 
 class PostgresSchemaRepository implements SchemaRepositoryInterface {
   query: string = "";
@@ -16,7 +17,7 @@ class PostgresSchemaRepository implements SchemaRepositoryInterface {
   }
   findTable(tableName: string): SchemaRepositoryInterface {
     this.query =
-      `select * from information_schema.tables where table_schema='public' and table_name='${tableName}';`;
+      `select table_name from information_schema.tables where table_schema='public' and table_name='${tableName}';`;
     return this;
   }
 
@@ -25,7 +26,7 @@ class PostgresSchemaRepository implements SchemaRepositoryInterface {
     columnName: string,
   ): SchemaRepositoryInterface {
     this.query =
-      `select * from information_schema.columns where table_schema='public' and table_name='${tableName}' and column_name='${columnName}';`;
+      `select table_name, column_name from information_schema.columns where table_schema='public' and table_name='${tableName}' and column_name='${columnName}';`;
     return this;
   }
 
@@ -47,14 +48,28 @@ class PostgresSchemaRepository implements SchemaRepositoryInterface {
     await client.query(this.query);
   }
 
-  async get(): Promise<any> {
+  async get(): Promise<Array<SchemaEntityInterface>> {
     let client = await postgres.getInstance();
     let result = await client.query(this.query);
-    return result;
+    let rows: Array<SchemaEntityInterface> = [];
+    for (let item of result.rows) {
+      let schema: SchemaEntityInterface = {
+        tableName: item[0],
+      };
+      if (item[1]) {
+        schema.columnName = item[1];
+      }
+      rows.push(schema);
+    }
+    return rows;
   }
 
   toSql(): string {
     return this.query;
+  }
+
+  first(): Promise<SchemaEntityInterface | null> {
+    return Promise.resolve(null);
   }
 }
 

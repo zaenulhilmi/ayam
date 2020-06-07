@@ -1,5 +1,6 @@
 import SchemaRepositoryInterface from "../interfaces/schema_repository_interface.ts";
 import mysql from "./../driver/mysql.ts";
+import SchemaEntityInterface from "../interfaces/entities/schema_entity_interface.ts";
 
 class MysqlSchemaRepository implements SchemaRepositoryInterface {
   query: string = "";
@@ -48,13 +49,41 @@ class MysqlSchemaRepository implements SchemaRepositoryInterface {
     await client.execute(this.query);
   }
 
-  async get(): Promise<any> {
+  async get(): Promise<Array<SchemaEntityInterface>> {
     let client = await mysql.getInstance();
-    return await client.query(this.query);
+    let rows = await client.query(this.query);
+    let result: Array<SchemaEntityInterface> = [];
+    for (let item of rows) {
+      let schema: SchemaEntityInterface = {
+        tableName: item.TABLE_NAME,
+      };
+      if (item.COLUMN_NAME) {
+        schema.columnName = item.COLUMN_NAME;
+      }
+      result.push(schema);
+    }
+
+    return result;
   }
 
   toSql(): string {
     return this.query;
+  }
+
+  async first(): Promise<SchemaEntityInterface | null> {
+    let client = await mysql.getInstance();
+    let rows = await client.query(this.query);
+    if (rows.length == 0) {
+      return null;
+    }
+    let item = rows[0];
+    let schema: SchemaEntityInterface = {
+      tableName: item.TABLE_NAME,
+    };
+    if (item.COLUMN_NAME) {
+      schema.columnName = item.COLUMN_NAME;
+    }
+    return schema;
   }
 }
 

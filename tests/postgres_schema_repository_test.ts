@@ -16,7 +16,7 @@ Deno.test("postgres find table", async () => {
   repo.findTable("users");
   assertEquals(
     repo.toSql(),
-    `select * from information_schema.tables where table_schema='public' and table_name='users';`,
+    `select table_name from information_schema.tables where table_schema='public' and table_name='users';`,
   );
 });
 
@@ -25,7 +25,7 @@ Deno.test("postgres find table column", async () => {
   repo.findTableColumn("users", "name");
   assertEquals(
     repo.toSql(),
-    `select * from information_schema.columns where table_schema='public' and table_name='users' and column_name='name';`,
+    `select table_name, column_name from information_schema.columns where table_schema='public' and table_name='users' and column_name='name';`,
   );
 });
 

@@ -68,7 +68,8 @@ class PostgresBuilder implements BuilderInterface {
   async build(): Promise<void> {
     let joinnedColumns = this._joinColumns();
     this.query = this.query.replace("COLUMNS_PLACEHOLDER", joinnedColumns);
-    await postgres.query(this.query);
+    let client = await postgres.getInstance();
+    await client.query(this.query);
   }
 
   toSql(): string {
