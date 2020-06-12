@@ -59,6 +59,7 @@ class MysqlSchemaRepository implements SchemaRepositoryInterface {
       };
       if (item.COLUMN_NAME) {
         schema.columnName = item.COLUMN_NAME;
+        schema.columnType = item.DATA_TYPE;
       }
       result.push(schema);
     }

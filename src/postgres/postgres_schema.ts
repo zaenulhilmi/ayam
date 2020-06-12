@@ -2,6 +2,7 @@ import SchemaInterface from "./../interfaces/schema_interface.ts";
 import BuilderInterface from "./../interfaces/builder_interface.ts";
 import PostgresBuilder from "./postgres_builder.ts";
 import SchemaRepositoryInterface from "./../interfaces/schema_repository_interface.ts";
+
 class PostgresSchemaRepository implements SchemaInterface {
   repo: SchemaRepositoryInterface;
 
@@ -10,29 +11,26 @@ class PostgresSchemaRepository implements SchemaInterface {
   }
 
   async hasTable(tableName: string): Promise<boolean> {
-    let res = await this.repo.findTable(tableName).get();
-    if (res.rows.length == 0) {
-      return false;
-    }
-    return true;
+    let res = await this.repo.findTable(tableName).first();
+    return !!res;
+
   }
 
   async hasColumn(tableName: string, columnName: string): Promise<boolean> {
-    let res = await this.repo.findTableColumn(tableName, columnName).get();
-    if (res.rows.length == 0) {
-      return false;
-    }
-
-    return true;
+    let res = await this.repo.findTableColumn(tableName, columnName).first();
+    return !!res
   }
 
   async getColumnType(tableName: string, columnName: string): Promise<string> {
-    let res = await this.repo.findTableColumn(tableName, columnName).get();
-    if (res.rows.length == 0) {
+    let res = await this.repo.findTableColumn(tableName, columnName).first();
+    if (!res) {
       return "";
     }
+    if(!res.columnType){
+      return ""
+    }
 
-    return res.rows[0]["udt_name"];
+    return res.columnType;
   }
 
   async create(

@@ -27,7 +27,7 @@ class PostgresSchemaRepository implements SchemaRepositoryInterface {
     columnName: string,
   ): SchemaRepositoryInterface {
     this.query =
-      `select table_name, column_name from information_schema.columns where table_schema='public' and table_name='${tableName}' and column_name='${columnName}';`;
+      `select table_name, column_name, udt_name from information_schema.columns where table_schema='public' and table_name='${tableName}' and column_name='${columnName}';`;
     return this;
   }
 
@@ -81,6 +81,7 @@ class PostgresSchemaRepository implements SchemaRepositoryInterface {
     };
     if (item[1]) {
       schema.columnName = item[1];
+      schema.columnType = item[2];
     }
     return schema;
   }

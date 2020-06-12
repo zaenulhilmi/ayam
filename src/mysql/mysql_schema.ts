@@ -11,42 +11,25 @@ class MySqlSchemaRepository implements SchemaInterface {
   }
 
   async hasTable(tableName: string): Promise<boolean> {
-    try {
-      let result = await this.repo.findTable(tableName).get();
-      if (result.length > 0) {
-        return true;
-      }
-      return false;
-    } catch (e) {
-      console.error(e);
-      return false;
-    }
+     let res = await this.repo.findTable(tableName).first();
+     return !!res
   }
 
   async hasColumn(tableName: string, columnName: string): Promise<boolean> {
-    try {
-      let result = await this.repo.findTableColumn(tableName, columnName).get();
-      if (result.length > 0) {
-        return true;
-      }
-      return false;
-    } catch (e) {
-      console.error(e);
-      return false;
-    }
+      let res = await this.repo.findTableColumn(tableName, columnName).first();
+      return !!res
   }
 
   async getColumnType(tableName: string, columnName: string): Promise<string> {
-    try {
-      let result = await this.repo.findTableColumn(tableName, columnName).get();
-      if (result.length == 0) {
-        throw new Error("Column not found");
+      let res = await this.repo.findTableColumn(tableName, columnName).first();
+      if(!res){
+        return ""
       }
-      return result[0]["COLUMN_TYPE"];
-    } catch (e) {
-      console.error(e);
-      throw (e);
-    }
+      if(!res.columnType){
+        return ""
+      }
+
+      return res.columnType
   }
 
   async create(
