@@ -1,5 +1,5 @@
-import SchemaRepositoryInterface from "../src/interfaces/schema_repository_interface.ts";
-import SqliteSchemaRepository from "../src/sqlite/sqlite_schema_repository.ts";
+import SchemaRepositoryInterface from "../../src/interfaces/schema_repository_interface.ts";
+import SqliteSchemaRepository from "../../src/sqlite/sqlite_schema_repository.ts";
 import { assertEquals } from "https://deno.land/std/testing/asserts.ts";
 
 function description(text: string): string {

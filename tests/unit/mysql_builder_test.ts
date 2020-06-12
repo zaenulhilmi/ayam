@@ -1,4 +1,4 @@
-import MySqlBuilder from "../src/mysql/mysql_builder.ts";
+import MySqlBuilder from "../../src/mysql/mysql_builder.ts";
 import { assertEquals } from "https://deno.land/std/testing/asserts.ts";
 
 Deno.test("create table using id()", async () => {

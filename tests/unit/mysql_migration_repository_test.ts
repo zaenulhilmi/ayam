@@ -1,5 +1,5 @@
-import MysqlMigrationRepository from "../src/mysql/mysql_migration_repository.ts";
-import MigrationRepositoryInterface from "../src/interfaces/migration_repository_interface.ts";
+import MysqlMigrationRepository from "../../src/mysql/mysql_migration_repository.ts";
+import MigrationRepositoryInterface from "../../src/interfaces/migration_repository_interface.ts";
 import { assertEquals } from "https://deno.land/std/testing/asserts.ts";
 
 function description(text: string): string {

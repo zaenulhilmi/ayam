@@ -1,4 +1,4 @@
-import PostgresBuilder from "../src/postgres/postgres_builder.ts";
+import PostgresBuilder from "../../src/postgres/postgres_builder.ts";
 import { assertEquals } from "https://deno.land/std/testing/asserts.ts";
 
 Deno.test("create a table using id()", async () => {

@@ -1,6 +1,6 @@
 import { assertEquals, assert } from "https://deno.land/std/testing/asserts.ts";
-import Generator from "./../src/generator.ts";
-import Configuration from "./../src/configuration.ts";
+import Generator from "../../src/generator.ts";
+import Configuration from "../../src/configuration.ts";
 
 Deno.test("generate a name for migration", async () => {
   let command: string = "create_users_table";

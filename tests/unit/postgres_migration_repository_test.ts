@@ -1,6 +1,6 @@
-import MigrationRepositoryInterface from "../src/interfaces/migration_repository_interface.ts";
+import MigrationRepositoryInterface from "../../src/interfaces/migration_repository_interface.ts";
 import { assertEquals } from "https://deno.land/std/testing/asserts.ts";
-import PostgresMigrationRepository from "../src/postgres/postgres_migration_repository.ts";
+import PostgresMigrationRepository from "../../src/postgres/postgres_migration_repository.ts";
 
 function description(text: string): string {
   return `Postgres Migration Repository Test: ${text}`;

@@ -1,5 +1,6 @@
 ## About Deno Ayam
 Deno Ayam is a migration tools for MySql, Postgres, and Sqlite.
+#### * this is not ready for production yet
 
 ## Installation
 <!--

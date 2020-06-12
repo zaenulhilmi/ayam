@@ -1,5 +1,5 @@
-import MysqlSchemaRepository from "../src/mysql/mysql_schema_repository.ts";
-import SchemaRepositoryInterface from "../src/interfaces/schema_repository_interface.ts";
+import MysqlSchemaRepository from "../../src/mysql/mysql_schema_repository.ts";
+import SchemaRepositoryInterface from "../../src/interfaces/schema_repository_interface.ts";
 import { assertEquals } from "https://deno.land/std/testing/asserts.ts";
 
 Deno.test("mysql insert into table", async () => {
