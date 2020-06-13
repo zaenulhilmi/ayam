@@ -18,6 +18,7 @@ let Postgres = {
 
 let Sqlite = {
     dialect: 'sqlite',
+    migrationDirectory: './migrations',
     file_path: 'database.db'
 }
 

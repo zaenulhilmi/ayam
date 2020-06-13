@@ -1,16 +1,17 @@
-// import MigrationRepositoryInterface from "../src/interfaces/migration_repository_interface.ts";
-// import { assertEquals } from "https://deno.land/std/testing/asserts.ts";
-//
-// function description(text: string): string {
-//     return `Sqlite Migration Repository Test: ${text}`;
-// }
-//
-// Deno.test(description("determine if a table exist"), async () => {
-//     let repo: MigrationRepositoryInterface = new PostgresMigrationRepository();
-//     repo.create();
-//     assertEquals(
-//         repo.toSql(),
-//         `select * from sqlite_master where type ='table' and name = 'migrations';`,
-//     );
-// });
-//
+import { assertEquals } from "https://deno.land/std/testing/asserts.ts";
+import SqliteMigrationRepository from "../../src/sqlite/sqlite_migration_repository.ts";
+import MigrationRepositoryInterface from "../../src/interfaces/migration_repository_interface.ts";
+
+function description(text: string): string {
+    return `Sqlite Migration Repository Test: ${text}`;
+}
+
+Deno.test(description("create migrations table"), async () => {
+    let repo: MigrationRepositoryInterface = new SqliteMigrationRepository();
+    repo.create();
+    assertEquals(
+        repo.toSql(),
+        `create table migrations (id integer primary key autoincrement, file_name varchar(255), step integer, created_at text, updated_at text);`
+    );
+});
+
