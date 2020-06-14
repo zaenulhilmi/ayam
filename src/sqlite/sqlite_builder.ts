@@ -1,9 +1,9 @@
 import BuilderInterface from "./../interfaces/builder_interface.ts";
 import SqliteColumn from "./sqlite_column.ts";
 import ColumnInterface from "./../interfaces/column_interface.ts";
-import postgres from "./../driver/postgres.ts";
+import sqlite from "./../driver/sqlite.ts";
 
-class PostgresBuilder implements BuilderInterface {
+class SqliteBuilder implements BuilderInterface {
   tableName: string;
   query: string;
   columns: Array<ColumnInterface> = [];
@@ -26,8 +26,8 @@ class PostgresBuilder implements BuilderInterface {
   }
 
   integer(columnName: string): BuilderInterface {
-    // let column: ColumnInterface = new PostgresColumn(columnName, 'integer')
-    // this.columns.push(column)
+    let column: ColumnInterface = new SqliteColumn(columnName, 'integer')
+    this.columns.push(column)
     return this;
   }
 
@@ -44,10 +44,10 @@ class PostgresBuilder implements BuilderInterface {
   }
 
   timestamps(): void {
-    // let createdAt: ColumnInterface = new PostgresColumn('created_at', 'timestamp')
-    // let updatedAt: ColumnInterface = new PostgresColumn('updated_at', 'timestamp')
-    // this.columns.push(createdAt)
-    // this.columns.push(updatedAt)
+    let createdAt: ColumnInterface = new SqliteColumn('created_at', 'text')
+    let updatedAt: ColumnInterface = new SqliteColumn('updated_at', 'text')
+    this.columns.push(createdAt)
+    this.columns.push(updatedAt)
   }
 
   nullable(): BuilderInterface {
@@ -66,15 +66,15 @@ class PostgresBuilder implements BuilderInterface {
   }
 
   async build(): Promise<void> {
-    let joinnedColumns = this._joinColumns();
-    this.query = this.query.replace("COLUMNS_PLACEHOLDER", joinnedColumns);
-    let client = await postgres.getInstance();
+    let joinedColumns = this._joinColumns();
+    this.query = this.query.replace("COLUMNS_PLACEHOLDER", joinedColumns);
+    let client = await sqlite.getInstance();
     await client.query(this.query);
   }
 
   toSql(): string {
-    let joinnedColumns = this._joinColumns();
-    this.query = this.query.replace("COLUMNS_PLACEHOLDER", joinnedColumns);
+    let joinedColumns = this._joinColumns();
+    this.query = this.query.replace("COLUMNS_PLACEHOLDER", joinedColumns);
     return this.query;
   }
 
@@ -91,4 +91,4 @@ class PostgresBuilder implements BuilderInterface {
   }
 }
 
-export default PostgresBuilder;
+export default SqliteBuilder;

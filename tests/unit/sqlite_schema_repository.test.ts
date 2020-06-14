@@ -26,7 +26,6 @@ Deno.test(description("find table"), async () => {
 
 Deno.test(description("find column"), async () => {
   let repo: SchemaRepositoryInterface = new SqliteSchemaRepository();
-  repo.findTableColumn("users", "name");
   assertEquals(
     repo.toSql(),
     ``,

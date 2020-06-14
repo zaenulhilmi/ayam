@@ -18,7 +18,9 @@ class Migration implements MigrationInterface {
       this.migrationRepo.constructor.name == "PostgresMigrationRepository"
     ) {
       this.dialect = "postgres";
-    } else {
+    } else if(this.migrationRepo.constructor.name == "SqliteMigrationRepository") {
+      this.dialect = "sqlite";
+    }else {
       throw new Error(`migration repository doesn't exist`);
     }
   }

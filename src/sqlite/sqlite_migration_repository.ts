@@ -1,5 +1,6 @@
 import MigrationRepositoryInterface from "../interfaces/migration_repository_interface.ts";
 import MigrationEntityInterface from "../interfaces/entities/migration_entity_interface.ts";
+import sqlite from "./../driver/sqlite.ts"
 
 class SqliteMigrationRepository implements MigrationRepositoryInterface {
   query: string = '';
@@ -16,12 +17,12 @@ class SqliteMigrationRepository implements MigrationRepositoryInterface {
   }
 
   lastMigration(): MigrationRepositoryInterface {
-    this.query = `select * from ${this.tableName} order by id desc limit 1;`;
+    this.query = `select id, file_name, step, created_at, updated_at from ${this.tableName} order by id desc limit 1;`;
     return this;
   }
 
   lastStepMigrations(): MigrationRepositoryInterface {
-    this.query = `select * from ${this.tableName} where step = (select max(step) from migrations);`;
+    this.query = `select id, file_name, step, created_at, updated_at from ${this.tableName} where step = (select max(step) from migrations);`;
     return this;
   }
 
@@ -31,14 +32,42 @@ class SqliteMigrationRepository implements MigrationRepositoryInterface {
   }
 
   async execute(): Promise<void> {
+    let client = await sqlite.getInstance()
+    await client.query(this.query)
   }
 
   async first(): Promise<MigrationEntityInterface | null> {
-    return null;
+    let client = await sqlite.getInstance()
+    let rows = client.query(this.query)
+    let migration: MigrationEntityInterface
+    for (const [id, file_name, step, created_at, updated_at] of rows){
+      migration = {
+        id,
+        file_name,
+        step,
+        created_at,
+        updated_at
+      }
+      rows.done();
+      return migration
+    }
+    return null
   }
 
   async get(): Promise<Array<MigrationEntityInterface>> {
-    return [{file_name: 't', step: 2}]
+    let migrations : Array<MigrationEntityInterface> = []
+    let client = await sqlite.getInstance()
+    for (const [id, file_name, step, created_at, updated_at] of client.query(this.query)){
+      let migration: MigrationEntityInterface = {
+        id,
+        file_name,
+        step,
+        created_at,
+        updated_at
+      }
+      migrations.push(migration)
+    }
+    return migrations
   }
 
   toSql(): string {

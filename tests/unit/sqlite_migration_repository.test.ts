@@ -29,7 +29,7 @@ Deno.test(description("get last migration row"), async () => {
     repo.lastMigration();
     assertEquals(
       repo.toSql(),
-      `select * from migrations order by id desc limit 1;`
+      `select id, file_name, step, created_at, updated_at from migrations order by id desc limit 1;`
     );
 });
 
@@ -38,7 +38,7 @@ Deno.test(description("get last step migrations rows"), async () => {
     repo.lastStepMigrations();
     assertEquals(
       repo.toSql(),
-      `select * from migrations where step = (select max(step) from migrations);`
+      `select id, file_name, step, created_at, updated_at from migrations where step = (select max(step) from migrations);`
     );
 });
 
