@@ -38,14 +38,9 @@ class Schema implements SchemaInterface {
     tableName: string,
     callback: (builder: BuilderInterface) => void,
   ): Promise<void> {
-    console.log('table name 1: ', this.builder.getTableName())
     this.builder.setTableName(tableName)
-    console.log('table name 2: ', this.builder.getTableName())
     callback(this.builder);
-
-    console.log('table name 3: ', this.builder.getTableName())
     await this.builder.build();
-    console.log('table name 4: ', this.builder.getTableName())
   }
 
   async drop(tableName: string): Promise<void> {

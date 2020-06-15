@@ -68,7 +68,6 @@ class SqliteBuilder implements BuilderInterface {
   async build(): Promise<void> {
     let joinedColumns = this._joinColumns();
     this.query = this.query.replace("COLUMNS_PLACEHOLDER", joinedColumns);
-    console.log(this.query);
     let client = await sqlite.getInstance();
     await client.query(this.query);
   }
