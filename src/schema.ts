@@ -1,13 +1,14 @@
-import SchemaInterface from "./../interfaces/schema_interface.ts";
-import BuilderInterface from "./../interfaces/builder_interface.ts";
-import PostgresBuilder from "./postgres_builder.ts";
-import SchemaRepositoryInterface from "./../interfaces/schema_repository_interface.ts";
+import SchemaInterface from "./interfaces/schema_interface.ts";
+import BuilderInterface from "./interfaces/builder_interface.ts";
+import SchemaRepositoryInterface from "./interfaces/schema_repository_interface.ts";
 
-class PostgresSchemaRepository implements SchemaInterface {
+class Schema implements SchemaInterface {
   repo: SchemaRepositoryInterface;
+  builder: BuilderInterface
 
-  constructor(repo: SchemaRepositoryInterface) {
+  constructor(repo: SchemaRepositoryInterface, builder: BuilderInterface) {
     this.repo = repo;
+    this.builder = builder;
   }
 
   async hasTable(tableName: string): Promise<boolean> {
@@ -37,9 +38,14 @@ class PostgresSchemaRepository implements SchemaInterface {
     tableName: string,
     callback: (builder: BuilderInterface) => void,
   ): Promise<void> {
-    let postgresBuilder: BuilderInterface = new PostgresBuilder(tableName);
-    callback(postgresBuilder);
-    await postgresBuilder.build();
+    console.log('table name 1: ', this.builder.getTableName())
+    this.builder.setTableName(tableName)
+    console.log('table name 2: ', this.builder.getTableName())
+    callback(this.builder);
+
+    console.log('table name 3: ', this.builder.getTableName())
+    await this.builder.build();
+    console.log('table name 4: ', this.builder.getTableName())
   }
 
   async drop(tableName: string): Promise<void> {
@@ -53,4 +59,4 @@ class PostgresSchemaRepository implements SchemaInterface {
   }
 }
 
-export default PostgresSchemaRepository;
+export default Schema;

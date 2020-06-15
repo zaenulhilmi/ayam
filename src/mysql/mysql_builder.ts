@@ -8,8 +8,8 @@ class MySqlBuilder implements BuilderInterface {
   query: string;
   columns: Array<ColumnInterface> = [];
 
-  constructor(tableName: string) {
-    this.tableName = tableName;
+  constructor(tableName?: string) {
+    this.tableName = tableName || '';
     this.query = `create table ${this.tableName} (COLUMNS_PLACEHOLDER);`;
   }
 
@@ -76,6 +76,15 @@ class MySqlBuilder implements BuilderInterface {
     let joinnedColumns = this.columns.join(", ");
     this.query = this.query.replace("COLUMNS_PLACEHOLDER", joinnedColumns);
     return this.query;
+  }
+
+  _updateQuery(): void {
+    this.query = `create table ${this.tableName} (COLUMNS_PLACEHOLDER);`;
+  }
+
+  setTableName(tableName: string) {
+    this.tableName = tableName;
+    this._updateQuery()
   }
 }
 

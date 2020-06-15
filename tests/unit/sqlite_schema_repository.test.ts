@@ -20,7 +20,7 @@ Deno.test(description("find table"), async () => {
   repo.findTable("users");
   assertEquals(
     repo.toSql(),
-    `select * from sqlite_master where type = 'table' and name = 'users';`,
+    `select type, name, tbl_name from sqlite_master where type = 'table' and name = 'users';`,
   );
 });
 

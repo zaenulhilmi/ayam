@@ -8,9 +8,14 @@ class PostgresBuilder implements BuilderInterface {
   query: string;
   columns: Array<ColumnInterface> = [];
 
-  constructor(tableName: string) {
-    this.tableName = tableName;
+  constructor(tableName?: string) {
+    this.tableName = tableName || '';
     this.query = `create table ${this.tableName} (COLUMNS_PLACEHOLDER);`;
+  }
+
+  setTableName(tableName: string) {
+    this.tableName = tableName
+    this._updateQuery()
   }
 
   id(): void {
@@ -97,6 +102,10 @@ class PostgresBuilder implements BuilderInterface {
       }
     }
     return result;
+  }
+
+  _updateQuery(): void {
+    this.query = `create table ${this.tableName} (COLUMNS_PLACEHOLDER);`;
   }
 }
 

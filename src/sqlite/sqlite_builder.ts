@@ -8,8 +8,8 @@ class SqliteBuilder implements BuilderInterface {
   query: string;
   columns: Array<ColumnInterface> = [];
 
-  constructor(tableName: string) {
-    this.tableName = tableName;
+  constructor(tableName?: string) {
+    this.tableName = tableName || '';
     this.query = `create table ${this.tableName} (COLUMNS_PLACEHOLDER);`;
   }
 
@@ -68,6 +68,7 @@ class SqliteBuilder implements BuilderInterface {
   async build(): Promise<void> {
     let joinedColumns = this._joinColumns();
     this.query = this.query.replace("COLUMNS_PLACEHOLDER", joinedColumns);
+    console.log(this.query);
     let client = await sqlite.getInstance();
     await client.query(this.query);
   }
@@ -76,6 +77,11 @@ class SqliteBuilder implements BuilderInterface {
     let joinedColumns = this._joinColumns();
     this.query = this.query.replace("COLUMNS_PLACEHOLDER", joinedColumns);
     return this.query;
+  }
+
+  setTableName(tableName: string) {
+    this.tableName = tableName
+    this._updateQuery()
   }
 
   _joinColumns(): string {
@@ -88,6 +94,10 @@ class SqliteBuilder implements BuilderInterface {
       }
     }
     return result;
+  }
+
+  _updateQuery(): void {
+    this.query = `create table ${this.tableName} (COLUMNS_PLACEHOLDER);`;
   }
 }
 

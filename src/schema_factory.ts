@@ -1,10 +1,11 @@
 import SchemaInterface from "./interfaces/schema_interface.ts";
-import MySqlSchema from "./mysql/mysql_schema.ts";
 import MysqlSchemaRepository from "./mysql/mysql_schema_repository.ts";
-import PostgresSchema from "./postgres/postgres_schema.ts";
 import PostgresSchemaRepository from "./postgres/postgres_schema_repository.ts";
 import SqliteSchemaRepository from "./sqlite/sqlite_schema_repository.ts";
-import SqliteSchema from "./sqlite/sqlite_schema.ts";
+import MySqlBuilder from "./mysql/mysql_builder.ts";
+import PostgresBuilder from "./postgres/postgres_builder.ts";
+import SqliteBuilder from "./sqlite/sqlite_builder.ts";
+import Schema from "./schema.ts";
 
 class SchemaFactory {
   dialect: string;
@@ -15,11 +16,11 @@ class SchemaFactory {
 
   get(): SchemaInterface {
     if (this.dialect == "mysql") {
-      return new MySqlSchema(new MysqlSchemaRepository());
+      return new Schema(new MysqlSchemaRepository(), new MySqlBuilder());
     } else if (this.dialect == "postgres") {
-      return new PostgresSchema(new PostgresSchemaRepository());
+      return new Schema(new PostgresSchemaRepository(), new PostgresBuilder());
     } else if (this.dialect == "sqlite") {
-      return new SqliteSchema(new SqliteSchemaRepository());
+      return new Schema(new SqliteSchemaRepository(), new SqliteBuilder());
     } else {
       throw new Error("dialect is not supported");
     }

@@ -58,6 +58,8 @@ interface BuilderInterface {
    * returning an SQL query
    */
   toSql(): string;
+
+  setTableName(tableName: string): void;
 }
 
 export default BuilderInterface;
