@@ -29,12 +29,12 @@ class Migration implements MigrationInterface {
     await this._createMigrationTableIfNotExist();
     let lastMigration = await this._getLastMigrationEntity();
     this.data = await this._getSortedQueuedMigrationEntity(lastMigration);
-    await this._executeData();
+    await this.executeData();
   }
 
   async rollback(): Promise<void> {
-    let lastStepMigration = await this._getLastStepMigrations();
-    await this._executeLastStepData(lastStepMigration);
+    let lastStepMigration = await this.getLastStepMigrations();
+    await this.executeLastStepData(lastStepMigration);
   }
 
   async _createMigrationTableIfNotExist(): Promise<void> {
@@ -89,7 +89,7 @@ class Migration implements MigrationInterface {
     return objectResult;
   }
 
-  async _executeData() {
+  private async executeData() {
     let config = await Configuration.newInstance();
     let migrationDir = await config.get("migrationDirectory");
     let projectDir = await Deno.cwd();
@@ -103,11 +103,11 @@ class Migration implements MigrationInterface {
     }
   }
 
-  async _getLastStepMigrations(): Promise<Array<MigrationEntityInterface>> {
+  private async getLastStepMigrations(): Promise<Array<MigrationEntityInterface>> {
     return await this.migrationRepo.lastStepMigrations().get();
   }
 
-  async _executeLastStepData(
+  private async executeLastStepData(
     lastStepMigrations: Array<MigrationEntityInterface>,
   ) {
     let config = await Configuration.newInstance();
